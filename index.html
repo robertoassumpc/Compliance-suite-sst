@@ -185,6 +185,34 @@ select.status-select{border:1px solid var(--line-strong); border-radius:8px; pad
 
 .footnote{font-size:.76rem; color:var(--ink-faint); margin-top:22px; border-top:1px solid var(--line); padding-top:12px; max-width:80ch;}
 
+/* CRUD: cabeçalhos de seção com ação, colunas de ações, inputs inline */
+.sec-row{display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin:30px 0 12px; padding-top:6px; border-top:1px solid var(--line);}
+.sec-row:first-of-type{border-top:none; padding-top:0; margin-top:0;}
+.sec-row h2{font-size:1.12rem; font-weight:700; margin:0;}
+.row-actions{display:flex; gap:6px; white-space:nowrap;}
+.icon-btn{background:none; border:1px solid var(--line); border-radius:8px; width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; font-size:.82rem; color:var(--ink-soft); flex:none; padding:0;}
+.icon-btn:hover{background:var(--paper-sunken); color:var(--ink);}
+.icon-btn.danger:hover{background:var(--red-100); color:var(--red-700); border-color:var(--red-600);}
+.iso-input{width:52px; text-align:right; border:1px solid var(--line-strong); border-radius:6px; padding:2px 5px; font-family:"IBM Plex Mono"; font-size:.8rem; background:var(--paper-raised); color:var(--ink);}
+.editable-kpi input{border:1px solid var(--line-strong); border-radius:8px; padding:5px 8px; font-family:"IBM Plex Mono"; font-weight:600; font-size:1.3rem; width:84px; background:var(--paper-raised); color:var(--ink);}
+
+/* modal genérico de cadastro/edição */
+.modal-overlay{position:fixed; inset:0; background:rgba(10,20,17,.5); display:flex; align-items:flex-start; justify-content:center; z-index:100; padding:5vh 16px;}
+.modal-overlay[hidden]{display:none;}
+.modal-box{background:var(--paper-raised); border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow); width:100%; max-width:600px; max-height:88vh; overflow-y:auto; padding:22px 24px;}
+.modal-head{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:16px;}
+.modal-head h3{font-size:1.05rem; font-weight:700; margin:0;}
+.modal-x{background:none; border:1px solid var(--line); border-radius:8px; font-size:1rem; color:var(--ink-faint); width:30px; height:30px; flex:none;}
+.modal-x:hover{background:var(--paper-sunken); color:var(--ink);}
+.form-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+.form-grid .full{grid-column:1/-1;}
+.form-field{display:flex; flex-direction:column; gap:5px;}
+.form-field label{font-family:Archivo; font-size:.7rem; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.03em;}
+.form-field input,.form-field select,.form-field textarea{border:1px solid var(--line-strong); border-radius:9px; padding:9px 11px; background:var(--paper-raised); color:var(--ink); width:100%; font-size:.88rem;}
+.form-field textarea{min-height:64px; resize:vertical; font-family:inherit;}
+.modal-actions{display:flex; justify-content:flex-end; gap:10px; margin-top:18px; grid-column:1/-1;}
+@media (max-width:560px){.form-grid{grid-template-columns:1fr;}}
+
 @media (max-width:900px){
   .app-shell{grid-template-columns:1fr;}
   .sidebar{position:fixed; left:0; top:64px; bottom:0; width:264px; transform:translateX(-100%); transition:transform .2s; z-index:50;}
@@ -194,7 +222,7 @@ select.status-select{border:1px solid var(--line-strong); border-radius:8px; pad
   .company-switcher select{max-width:150px;}
 }
 @media print{
-  .sidebar,.topbar,.menu-btn,.tab-row,.btn,select.status-select{display:none !important;}
+  .sidebar,.topbar,.menu-btn,.tab-row,.btn,select.status-select,.modal-overlay,.row-actions{display:none !important;}
   main.content{padding:0; max-width:100%;}
   .app-shell{display:block;}
   .view{display:block !important;}
@@ -241,6 +269,22 @@ select.status-select{border:1px solid var(--line-strong); border-radius:8px; pad
   <main class="content" id="content"></main>
 </div>
 
+<div class="modal-overlay" id="modalOverlay" hidden>
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="modalTitle">Título</h3>
+      <button type="button" class="modal-x" id="modalCloseBtn" aria-label="Fechar">✕</button>
+    </div>
+    <form id="modalForm">
+      <div class="form-grid" id="modalFields"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn ghost" id="modalCancelBtn">Cancelar</button>
+        <button type="submit" class="btn primary">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script>
 /* =========================================================================
    SST COMPLIANCE SUITE
@@ -255,8 +299,9 @@ const DAY = 86400000;
 const today = new Date(); today.setHours(0,0,0,0);
 
 function addDays(n){ return new Date(today.getTime() + n*DAY); }
-function fmtDate(d){ d = (d instanceof Date) ? d : new Date(d); return d.toLocaleDateString('pt-BR'); }
-function daysUntil(d){ d = (d instanceof Date) ? d : new Date(d); d = new Date(d); d.setHours(0,0,0,0); return Math.round((d - today)/DAY); }
+function isoDate(d){ return d.toISOString().slice(0,10); }
+function fmtDate(d){ if(!d) return '—'; const dt = (typeof d==='string') ? new Date(d+'T00:00:00') : d; return dt.toLocaleDateString('pt-BR'); }
+function daysUntil(d){ if(!d) return 9999; const dt = (typeof d==='string') ? new Date(d+'T00:00:00') : new Date(d); dt.setHours(0,0,0,0); return Math.round((dt - today)/DAY); }
 function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
 function pct(v){ return Math.round(v) + '%'; }
 function uid(prefix){ return prefix + '_' + Math.random().toString(36).slice(2,9); }
@@ -546,13 +591,16 @@ function seedData(){
 
 /* ---- construtores de entidades (deixam o seed acima legível) ---- */
 function ghe(name, agents, riskLevel, controls, status){ return {id:uid('ghe'), name, agents, riskLevel, controls, status}; }
-function action(measure, ghe, responsible, dueOffset, status){ return {id:uid('act'), measure, ghe, responsible, due:dueOffset, status, hierarchy:'Ver medida'}; }
+function action(measure, ghe, responsible, dueOffset, status){ return {id:uid('act'), measure, ghe, responsible, due:isoDate(addDays(dueOffset)), status}; }
 function legal(nr, requirement, status){ return {id:uid('leg'), nr, requirement, status}; }
 function objective(name, metric, current, target, dir){ return {id:uid('obj'), name, metric, current, target, dir}; }
-function doc(type, dueOffset){ return {id:uid('doc'), type, due:dueOffset}; }
-function nc(source, description, severity, dueOffset, responsible, status){ return {id:uid('nc'), source, description, severity, due:dueOffset, responsible, status}; }
-function audit(date, type, scope, findingsOpen, findingsClosed, result){ return {id:uid('aud'), date, type, scope, findingsOpen, findingsClosed, result}; }
-function training(nr, name, total, completed, dueOffset){ return {id:uid('trn'), nr, name, total, completed, due:dueOffset}; }
+function doc(type, dueOffset){ return {id:uid('doc'), type, due:isoDate(addDays(dueOffset))}; }
+function nc(source, description, severity, dueOffset, responsible, status){ return {id:uid('nc'), source, description, severity, due:isoDate(addDays(dueOffset)), responsible, status}; }
+function audit(dateBR, type, scope, findingsOpen, findingsClosed, result){
+  const [dd,mm,yyyy] = dateBR.split('/');
+  return {id:uid('aud'), date:`${yyyy}-${mm}-${dd}`, type, scope, findingsOpen, findingsClosed, result};
+}
+function training(nr, name, total, completed, dueOffset){ return {id:uid('trn'), nr, name, total, completed, due:isoDate(addDays(dueOffset))}; }
 function company(o){ return o; }
 
 /* ============================= ESTADO / PERSISTÊNCIA ============================= */
@@ -581,7 +629,7 @@ function computeKPIs(co){
   const groScore = co.ghes.length ? Math.round(100*groControlled/co.ghes.length) : 100;
 
   const actionsTotal = co.actionPlan.length;
-  const actionsLate = co.actionPlan.filter(a=>a.status==='Atrasado' || (a.due<0 && a.status!=='Concluído')).length;
+  const actionsLate = co.actionPlan.filter(a=>a.status==='Atrasado' || (daysUntil(a.due)<0 && a.status!=='Concluído')).length;
   const actionsDone = co.actionPlan.filter(a=>a.status==='Concluído').length;
   const actionsOnTime = actionsTotal ? Math.round(100*(actionsTotal-actionsLate)/actionsTotal) : 100;
 
@@ -589,11 +637,11 @@ function computeKPIs(co){
   const isoScore = isoVals.length ? Math.round(isoVals.reduce((a,b)=>a+b,0)/isoVals.length) : 0;
 
   const docsTotal = co.documents.length;
-  const docsOverdue = co.documents.filter(d=>d.due<0).length;
+  const docsOverdue = co.documents.filter(d=>daysUntil(d.due)<0).length;
   const docsScore = docsTotal ? Math.round(100*(docsTotal-docsOverdue)/docsTotal) : 100;
 
   const ncOpen = co.ncs.filter(n=>n.status!=='Concluída' && n.status!=='Fechada').length;
-  const ncOverdue = co.ncs.filter(n=>n.due<0 && n.status!=='Concluída' && n.status!=='Fechada').length;
+  const ncOverdue = co.ncs.filter(n=>daysUntil(n.due)<0 && n.status!=='Concluída' && n.status!=='Fechada').length;
   const ncCritical = co.ncs.filter(n=>n.severity==='Crítica' && n.status!=='Concluída').length;
 
   const trainingScore = co.trainings.length ? Math.round(100*co.trainings.reduce((s,t)=>s+(t.completed/t.total),0)/co.trainings.length) : 100;
@@ -673,8 +721,8 @@ function viewOverview(){
   // alertas de vencimento cross-empresa
   let alerts = [];
   withK.forEach(({c})=>{
-    c.documents.forEach(d=>{ if(d.due<=30) alerts.push({co:c.name, label:d.type, due:d.due, kind:'doc'}); });
-    c.actionPlan.forEach(a=>{ if((a.due<=7 || a.status==='Atrasado') && a.status!=='Concluído') alerts.push({co:c.name, label:'Ação: '+a.measure, due:a.due, kind:'action'}); });
+    c.documents.forEach(d=>{ const dd=daysUntil(d.due); if(dd<=30) alerts.push({co:c.name, label:d.type, due:dd, kind:'doc'}); });
+    c.actionPlan.forEach(a=>{ const ad=daysUntil(a.due); if((ad<=7 || a.status==='Atrasado') && a.status!=='Concluído') alerts.push({co:c.name, label:'Ação: '+a.measure, due:ad, kind:'action'}); });
   });
   alerts.sort((a,b)=>a.due-b.due);
 
@@ -744,15 +792,22 @@ function viewSettings(){
   <h1 class="page-title">Empresas &amp; configuração da consultoria</h1>
   <p class="lede">Cadastro das empresas-clientes atendidas. Este protótipo mantém os dados no navegador (localStorage) — em produção, cada empresa seria um tenant isolado em banco de dados, com controle de acesso por perfil (consultor, gestor da empresa-cliente, técnico de segurança, auditor).</p>
 
-  <h2 class="sec">Empresas cadastradas (${cos.length})</h2>
+  <div class="sec-row" style="border-top:none; margin-top:0;">
+    <h2>Empresas cadastradas (${cos.length})</h2>
+    <button class="btn primary small" id="addCoBtn2">+ Nova empresa</button>
+  </div>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>Empresa</th><th>CNPJ</th><th>Setor</th><th>Grau de risco (NR‑4)</th><th>Colaboradores</th><th>Score</th><th></th></tr></thead>
+      <thead><tr><th>Empresa</th><th>CNPJ</th><th>Setor</th><th>Grau de risco (NR‑4)</th><th>Colaboradores</th><th>Score</th><th>Ações</th></tr></thead>
       <tbody>
         ${cos.map(c=>{ const k=computeKPIs(c); return `<tr>
           <td>${esc(c.name)}</td><td class="code">${c.cnpj}</td><td>${esc(c.sector)}</td><td>${c.nr4}</td><td>${c.employees}</td>
           <td><span class="status-badge ${scoreStatus(k.overall)}">${k.overall}%</span></td>
-          <td><button class="btn ghost small" data-goto-company="${c.id}">Abrir →</button></td>
+          <td class="row-actions">
+            <button class="btn ghost small" data-goto-company="${c.id}">Abrir →</button>
+            <button class="icon-btn" data-edit-company="${c.id}" title="Editar dados">✏️</button>
+            <button class="icon-btn danger" data-del-company="${c.id}" title="Excluir empresa">🗑️</button>
+          </td>
         </tr>`; }).join('')}
       </tbody>
     </table>
@@ -778,7 +833,10 @@ function viewDashboard(){
 
   return `
   <div class="kicker"><span class="pill teal">${esc(co.sector)}</span><span class="pill ${scoreStatus(k.overall)==='good'?'green':scoreStatus(k.overall)==='warn'?'amber':'red'}">Grau de risco NR‑4: ${co.nr4}</span></div>
-  <h1 class="page-title">${esc(co.name)}</h1>
+  <div class="sec-row" style="border-top:none; margin:0 0 4px;">
+    <h1 class="page-title" style="margin:0;">${esc(co.name)}</h1>
+    <button class="btn ghost small" data-edit-company="${co.id}">✏️ Editar dados da empresa</button>
+  </div>
   <p class="lede">${co.employees} colaboradores · CNPJ ${co.cnpj} · Dashboard consolidado de compliance de SST.</p>
 
   <div class="grid-2" style="align-items:stretch;">
@@ -831,17 +889,24 @@ function viewGRO(){
 
   <div class="callout legal"><span class="ic">ℹ️</span><div><div class="t">Aplicabilidade do documento formal de PGR</div>O <strong>GRO é obrigatório para toda organização</strong>, independentemente do porte. A elaboração do <strong>documento formal do PGR</strong> pode ser simplificada/dispensada para estabelecimentos de menor risco (graus 1 e 2 na NR‑4) e menor porte, conforme critérios da NR‑01 — mas as obrigações de identificar perigos, avaliar e controlar riscos permanecem vigentes em qualquer caso.</div></div>
 
-  <h2 class="sec">Inventário de riscos por GHE</h2>
+  <div class="sec-row" style="border-top:none; margin-top:0;">
+    <h2>Inventário de riscos por GHE</h2>
+    <button class="btn primary small" data-add-entity="ghe">+ Adicionar GHE</button>
+  </div>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>GHE</th><th>Agentes / Perigos</th><th>Classificação</th><th>Medidas de controle atuais</th><th>Status</th></tr></thead>
+      <thead><tr><th>GHE</th><th>Agentes / Perigos</th><th>Classificação</th><th>Medidas de controle atuais</th><th>Status</th><th>Ações</th></tr></thead>
       <tbody>
-        ${co.ghes.map(g=>`<tr>
+        ${co.ghes.length===0?'<tr><td colspan="6">Nenhum GHE cadastrado ainda. Use "+ Adicionar GHE" para começar o inventário de riscos.</td></tr>':co.ghes.map(g=>`<tr>
           <td style="font-family:Archivo; font-weight:600;">${esc(g.name)}</td>
           <td>${esc(g.agents)}</td>
           <td>${riskBadge(g.riskLevel)}</td>
           <td>${esc(g.controls)}</td>
           <td><span class="status-badge ${g.status==='Controlado'?'good':g.status==='Em controle'?'warn':'bad'}">${g.status}</span></td>
+          <td class="row-actions">
+            <button class="icon-btn" data-edit-entity="ghe" data-id="${g.id}" title="Editar">✏️</button>
+            <button class="icon-btn danger" data-del-entity="ghe" data-id="${g.id}" title="Excluir">🗑️</button>
+          </td>
         </tr>`).join('')}
       </tbody>
     </table>
@@ -850,20 +915,27 @@ function viewGRO(){
   <h3 class="sub">Hierarquia de controle (referência)</h3>
   <p>Eliminação → Substituição → Controles de engenharia → Controles administrativos → Equipamento de Proteção Individual (EPI). O plano de ação abaixo deve priorizar medidas nos níveis mais altos da hierarquia sempre que tecnicamente viável.</p>
 
-  <h2 class="sec">Plano de ação (medidas de controle)</h2>
+  <div class="sec-row">
+    <h2>Plano de ação (medidas de controle)</h2>
+    <button class="btn primary small" data-add-entity="action">+ Adicionar medida</button>
+  </div>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>Medida</th><th>GHE relacionado</th><th>Responsável</th><th>Prazo</th><th>Status</th></tr></thead>
+      <thead><tr><th>Medida</th><th>GHE relacionado</th><th>Responsável</th><th>Prazo</th><th>Status rápido</th><th>Ações</th></tr></thead>
       <tbody>
-        ${co.actionPlan.map(a=>`<tr data-action-row="${a.id}">
+        ${co.actionPlan.length===0?'<tr><td colspan="6">Nenhuma medida cadastrada ainda.</td></tr>':co.actionPlan.map(a=>`<tr data-action-row="${a.id}">
           <td style="min-width:220px;">${esc(a.measure)}</td>
           <td>${esc(a.ghe)}</td>
           <td>${esc(a.responsible)}</td>
-          <td><span class="status-badge ${docStatus(a.due)}">${docLabel(a.due)}</span></td>
+          <td><span class="status-badge ${docStatus(daysUntil(a.due))}">${fmtDate(a.due)} · ${docLabel(daysUntil(a.due))}</span></td>
           <td>
             <select class="status-select" data-action-status="${a.id}">
               ${['Pendente','Em andamento','Concluído','Atrasado'].map(s=>`<option value="${s}" ${s===a.status?'selected':''}>${s}</option>`).join('')}
             </select>
+          </td>
+          <td class="row-actions">
+            <button class="icon-btn" data-edit-entity="action" data-id="${a.id}" title="Editar">✏️</button>
+            <button class="icon-btn danger" data-del-entity="action" data-id="${a.id}" title="Excluir">🗑️</button>
           </td>
         </tr>`).join('')}
       </tbody>
@@ -881,31 +953,49 @@ function viewISO(){
   <h1 class="page-title">Sistema de Gestão de SST — ISO 45001</h1>
   <p class="lede">Maturidade por cláusula (4 a 10), matriz de requisitos legais aplicáveis e objetivos do SGSST, base para o ciclo PDCA de melhoria contínua.</p>
 
-  <h2 class="sec">Maturidade por cláusula</h2>
+  <h2 class="sec" style="border-top:none;">Maturidade por cláusula <span style="font-weight:500; font-size:.78rem; color:var(--ink-faint);">(edite a nota 0–100 de cada cláusula)</span></h2>
   <div class="card">
-    ${Object.keys(clauseNames).map(k=>barRow(clauseNames[k], co.iso[k])).join('')}
+    ${Object.keys(clauseNames).map(k=>`<div class="bar-row">
+      <div class="lbl" title="${clauseNames[k]}">${clauseNames[k]}</div>
+      <div class="bar-track"><div class="bar-fill ${scoreFill(co.iso[k])}" style="width:${clamp(co.iso[k],0,100)}%"></div></div>
+      <div class="val"><input type="number" min="0" max="100" class="iso-input" data-iso-key="${k}" value="${co.iso[k]}">%</div>
+    </div>`).join('')}
   </div>
 
-  <h2 class="sec">Matriz de requisitos legais aplicáveis</h2>
+  <div class="sec-row">
+    <h2>Matriz de requisitos legais aplicáveis</h2>
+    <button class="btn primary small" data-add-entity="legal">+ Adicionar requisito</button>
+  </div>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>Norma</th><th>Requisito</th><th>Situação</th></tr></thead>
+      <thead><tr><th>Norma</th><th>Requisito</th><th>Situação</th><th>Ações</th></tr></thead>
       <tbody>
-        ${co.legal.map(l=>`<tr><td class="code">${l.nr}</td><td>${esc(l.requirement)}</td><td><span class="status-badge ${l.status==='Conforme'?'good':l.status==='Parcial'?'warn':'bad'}">${l.status}</span></td></tr>`).join('')}
+        ${co.legal.length===0?'<tr><td colspan="4">Nenhum requisito cadastrado ainda.</td></tr>':co.legal.map(l=>`<tr><td class="code">${esc(l.nr)}</td><td>${esc(l.requirement)}</td><td><span class="status-badge ${l.status==='Conforme'?'good':l.status==='Parcial'?'warn':'bad'}">${l.status}</span></td>
+        <td class="row-actions">
+          <button class="icon-btn" data-edit-entity="legal" data-id="${l.id}" title="Editar">✏️</button>
+          <button class="icon-btn danger" data-del-entity="legal" data-id="${l.id}" title="Excluir">🗑️</button>
+        </td></tr>`).join('')}
       </tbody>
     </table>
   </div>
 
-  <h2 class="sec">Objetivos do SGSST (cláusula 6.2)</h2>
+  <div class="sec-row">
+    <h2>Objetivos do SGSST (cláusula 6.2)</h2>
+    <button class="btn primary small" data-add-entity="objective">+ Adicionar objetivo</button>
+  </div>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>Objetivo</th><th>Indicador</th><th>Atual</th><th>Meta</th><th>Progresso</th></tr></thead>
+      <thead><tr><th>Objetivo</th><th>Indicador</th><th>Atual</th><th>Meta</th><th>Progresso</th><th>Ações</th></tr></thead>
       <tbody>
-        ${co.objectives.map(o=>{
+        ${co.objectives.length===0?'<tr><td colspan="6">Nenhum objetivo cadastrado ainda.</td></tr>':co.objectives.map(o=>{
           const better = o.dir==='menor melhor';
           const progress = better ? clamp(100*(1-(o.current-o.target)/Math.max(1,o.current)),0,100) : clamp(100*o.current/Math.max(1,o.target),0,100);
           return `<tr><td>${esc(o.name)}</td><td>${esc(o.metric)}</td><td class="code">${o.current}</td><td class="code">${o.target}</td>
-          <td style="min-width:160px;"><div class="bar-track"><div class="bar-fill ${scoreFill(progress)}" style="width:${progress}%"></div></div></td></tr>`;
+          <td style="min-width:140px;"><div class="bar-track"><div class="bar-fill ${scoreFill(progress)}" style="width:${progress}%"></div></div></td>
+          <td class="row-actions">
+            <button class="icon-btn" data-edit-entity="objective" data-id="${o.id}" title="Editar">✏️</button>
+            <button class="icon-btn danger" data-del-entity="objective" data-id="${o.id}" title="Excluir">🗑️</button>
+          </td></tr>`;
         }).join('')}
       </tbody>
     </table>
@@ -917,16 +1007,24 @@ function viewISO(){
 
 function viewDocs(){
   const co = activeCo();
-  const sorted = co.documents.slice().sort((a,b)=>a.due-b.due);
+  const sorted = co.documents.slice().sort((a,b)=>a.due.localeCompare(b.due));
   return `
   <div class="kicker"><span class="pill teal">Gestão documental</span></div>
   <h1 class="page-title">Documentos obrigatórios &amp; vencimentos</h1>
-  <p class="lede">Controle de validade dos documentos legais de SST. Datas calculadas a partir de hoje (${fmtDate(today)}).</p>
+  <p class="lede">Controle de validade dos documentos legais de SST. Situação calculada a partir de hoje (${fmtDate(today)}).</p>
+  <div class="sec-row" style="border-top:none; margin-top:0;">
+    <h2>Documentos (${sorted.length})</h2>
+    <button class="btn primary small" data-add-entity="doc">+ Adicionar documento</button>
+  </div>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>Documento</th><th>Vencimento</th><th>Situação</th></tr></thead>
+      <thead><tr><th>Documento</th><th>Vencimento</th><th>Situação</th><th>Ações</th></tr></thead>
       <tbody>
-        ${sorted.map(d=>`<tr><td>${esc(d.type)}</td><td class="code">${fmtDate(addDays(d.due))}</td><td><span class="status-badge ${docStatus(d.due)}">${docLabel(d.due)}</span></td></tr>`).join('')}
+        ${sorted.length===0?'<tr><td colspan="4">Nenhum documento cadastrado ainda.</td></tr>':sorted.map(d=>`<tr><td>${esc(d.type)}</td><td class="code">${fmtDate(d.due)}</td><td><span class="status-badge ${docStatus(daysUntil(d.due))}">${docLabel(daysUntil(d.due))}</span></td>
+        <td class="row-actions">
+          <button class="icon-btn" data-edit-entity="doc" data-id="${d.id}" title="Editar">✏️</button>
+          <button class="icon-btn danger" data-del-entity="doc" data-id="${d.id}" title="Excluir">🗑️</button>
+        </td></tr>`).join('')}
       </tbody>
     </table>
   </div>
@@ -936,21 +1034,29 @@ function viewDocs(){
 
 function viewNC(){
   const co = activeCo();
-  const all = co.ncs.slice().sort((a,b)=>a.due-b.due);
+  const all = co.ncs.slice().sort((a,b)=>a.due.localeCompare(b.due));
   return `
   <div class="kicker"><span class="pill teal">Não conformidades</span></div>
   <h1 class="page-title">Não conformidades &amp; plano de ação corretiva</h1>
   <p class="lede">Registro de NC (auditorias, inspeções e incidentes) com prazo, responsável e status de tratativa — cláusula 10.2 da ISO 45001.</p>
+  <div class="sec-row" style="border-top:none; margin-top:0;">
+    <h2>Registros (${all.length})</h2>
+    <button class="btn primary small" data-add-entity="nc">+ Adicionar NC</button>
+  </div>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>Origem</th><th>Descrição</th><th>Severidade</th><th>Prazo</th><th>Responsável</th><th>Status</th></tr></thead>
+      <thead><tr><th>Origem</th><th>Descrição</th><th>Severidade</th><th>Prazo</th><th>Responsável</th><th>Status rápido</th><th>Ações</th></tr></thead>
       <tbody>
-        ${all.length===0?'<tr><td colspan="6">Nenhuma NC registrada nesta empresa. ✅</td></tr>':all.map(n=>`<tr>
+        ${all.length===0?'<tr><td colspan="7">Nenhuma NC registrada nesta empresa. ✅</td></tr>':all.map(n=>`<tr>
           <td>${esc(n.source)}</td><td style="min-width:220px;">${esc(n.description)}</td>
           <td><span class="status-badge ${ncSeverityColor(n.severity)}">${n.severity}</span></td>
-          <td><span class="status-badge ${docStatus(n.due)}">${docLabel(n.due)}</span></td>
+          <td><span class="status-badge ${docStatus(daysUntil(n.due))}">${fmtDate(n.due)} · ${docLabel(daysUntil(n.due))}</span></td>
           <td>${esc(n.responsible)}</td>
           <td><select class="status-select" data-nc-status="${n.id}">${['Pendente','Em andamento','Concluída','Atrasada'].map(s=>`<option value="${s}" ${s===n.status?'selected':''}>${s}</option>`).join('')}</select></td>
+          <td class="row-actions">
+            <button class="icon-btn" data-edit-entity="nc" data-id="${n.id}" title="Editar">✏️</button>
+            <button class="icon-btn danger" data-del-entity="nc" data-id="${n.id}" title="Excluir">🗑️</button>
+          </td>
         </tr>`).join('')}
       </tbody>
     </table>
@@ -960,19 +1066,28 @@ function viewNC(){
 
 function viewAudits(){
   const co = activeCo();
+  const sorted = co.audits.slice().sort((a,b)=>b.date.localeCompare(a.date));
   return `
   <div class="kicker"><span class="pill teal">Auditorias</span></div>
   <h1 class="page-title">Programa de auditorias internas</h1>
   <p class="lede">Histórico de auditorias do SGSST (cláusula 9.2 da ISO 45001) — planejamento, escopo, achados e resultado.</p>
+  <div class="sec-row" style="border-top:none; margin-top:0;">
+    <h2>Auditorias registradas (${sorted.length})</h2>
+    <button class="btn primary small" data-add-entity="audit">+ Adicionar auditoria</button>
+  </div>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>Data</th><th>Tipo</th><th>Escopo</th><th>Achados abertos</th><th>Achados fechados</th><th>Resultado</th></tr></thead>
+      <thead><tr><th>Data</th><th>Tipo</th><th>Escopo</th><th>Achados abertos</th><th>Achados fechados</th><th>Resultado</th><th>Ações</th></tr></thead>
       <tbody>
-        ${co.audits.length===0?'<tr><td colspan="6">Nenhuma auditoria registrada.</td></tr>':co.audits.map(a=>`<tr>
-          <td class="code">${a.date}</td><td>${esc(a.type)}</td><td>${esc(a.scope)}</td>
+        ${sorted.length===0?'<tr><td colspan="7">Nenhuma auditoria registrada.</td></tr>':sorted.map(a=>`<tr>
+          <td class="code">${fmtDate(a.date)}</td><td>${esc(a.type)}</td><td>${esc(a.scope)}</td>
           <td><span class="status-badge ${a.findingsOpen>0?'bad':'good'}">${a.findingsOpen}</span></td>
           <td><span class="status-badge good">${a.findingsClosed}</span></td>
           <td>${esc(a.result)}</td>
+          <td class="row-actions">
+            <button class="icon-btn" data-edit-entity="audit" data-id="${a.id}" title="Editar">✏️</button>
+            <button class="icon-btn danger" data-del-entity="audit" data-id="${a.id}" title="Excluir">🗑️</button>
+          </td>
         </tr>`).join('')}
       </tbody>
     </table>
@@ -989,21 +1104,36 @@ function viewTraining(){
   <p class="lede">Cobertura de treinamentos obrigatórios (NRs) e de atestados de saúde ocupacional — cláusula 7.2 da ISO 45001 (competência).</p>
 
   <div class="kpi-grid">
-    ${kpiCard({label:'ASO em dia', value:co.asoCompliance, unit:'%'})}
-    ${kpiCard({label:'EPI (CA + ficha)', value:co.epiCompliance, unit:'%'})}
-    ${kpiCard({label:'Cobertura média de treinamentos', value:computeKPIs(co).trainingScore, unit:'%'})}
+    <div class="kpi-card editable-kpi">
+      <div class="label"><span>ASO em dia</span></div>
+      <div class="value"><input type="number" min="0" max="100" data-company-field="asoCompliance" value="${co.asoCompliance}"><span class="unit">%</span></div>
+      <div class="note">Editável — integração RH/eSocial</div>
+    </div>
+    <div class="kpi-card editable-kpi">
+      <div class="label"><span>EPI (CA + ficha)</span></div>
+      <div class="value"><input type="number" min="0" max="100" data-company-field="epiCompliance" value="${co.epiCompliance}"><span class="unit">%</span></div>
+      <div class="note">Editável — fichas assinadas com CA válido</div>
+    </div>
+    ${kpiCard({label:'Cobertura média de treinamentos', value:computeKPIs(co).trainingScore, unit:'%', note:'Calculado a partir da tabela abaixo'})}
   </div>
 
-  <h2 class="sec">Treinamentos por norma</h2>
+  <div class="sec-row">
+    <h2>Treinamentos por norma</h2>
+    <button class="btn primary small" data-add-entity="training">+ Adicionar treinamento</button>
+  </div>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>Norma</th><th>Treinamento</th><th>Concluídos / Necessários</th><th>Cobertura</th><th>Próx. reciclagem</th></tr></thead>
+      <thead><tr><th>Norma</th><th>Treinamento</th><th>Concluídos / Necessários</th><th>Cobertura</th><th>Próx. reciclagem</th><th>Ações</th></tr></thead>
       <tbody>
-        ${co.trainings.map(t=>{
-          const cov = Math.round(100*t.completed/t.total);
-          return `<tr><td class="code">${t.nr}</td><td>${esc(t.name)}</td><td>${t.completed} / ${t.total}</td>
+        ${co.trainings.length===0?'<tr><td colspan="6">Nenhum treinamento cadastrado ainda.</td></tr>':co.trainings.map(t=>{
+          const cov = t.total ? Math.round(100*t.completed/t.total) : 0;
+          return `<tr><td class="code">${esc(t.nr)}</td><td>${esc(t.name)}</td><td>${t.completed} / ${t.total}</td>
           <td style="min-width:150px;"><div class="bar-track"><div class="bar-fill ${scoreFill(cov)}" style="width:${cov}%"></div></div></td>
-          <td><span class="status-badge ${docStatus(t.due)}">${docLabel(t.due)}</span></td></tr>`;
+          <td><span class="status-badge ${docStatus(daysUntil(t.due))}">${fmtDate(t.due)} · ${docLabel(daysUntil(t.due))}</span></td>
+          <td class="row-actions">
+            <button class="icon-btn" data-edit-entity="training" data-id="${t.id}" title="Editar">✏️</button>
+            <button class="icon-btn danger" data-del-entity="training" data-id="${t.id}" title="Excluir">🗑️</button>
+          </td></tr>`;
         }).join('')}
       </tbody>
     </table>
@@ -1080,6 +1210,208 @@ function refreshCompanySelect(){
   sel.innerHTML = DB.companies.map(c=>`<option value="${c.id}" ${c.id===DB.activeCompany?'selected':''}>${esc(c.name)}</option>`).join('');
 }
 
+/* ============================= CRUD GENÉRICO (modal + entidades) ============================= */
+const ENTITY = {
+  ghe: { listKey:'ghes', title:'Grupo Homogêneo de Exposição (GHE)',
+    fields:[
+      {key:'name', label:'Nome do GHE', type:'text', required:true, full:true},
+      {key:'agents', label:'Agentes / perigos', type:'text', required:true, full:true},
+      {key:'riskLevel', label:'Classificação de risco', type:'select', options:['Baixo','Médio','Alto','Crítico']},
+      {key:'status', label:'Status do controle', type:'select', options:['Controlado','Em controle','Ação pendente']},
+      {key:'controls', label:'Medidas de controle atuais', type:'textarea', full:true},
+    ],
+    blank:()=>({name:'', agents:'', riskLevel:'Médio', status:'Ação pendente', controls:''})
+  },
+  action: { listKey:'actionPlan', title:'Medida do plano de ação',
+    fields:[
+      {key:'measure', label:'Medida', type:'text', required:true, full:true},
+      {key:'ghe', label:'GHE relacionado', type:'text'},
+      {key:'responsible', label:'Responsável', type:'text'},
+      {key:'due', label:'Prazo', type:'date', required:true},
+      {key:'status', label:'Status', type:'select', options:['Pendente','Em andamento','Concluído','Atrasado']},
+    ],
+    blank:()=>({measure:'', ghe:'', responsible:'', due:isoDate(addDays(30)), status:'Pendente'})
+  },
+  legal: { listKey:'legal', title:'Requisito legal',
+    fields:[
+      {key:'nr', label:'Norma', type:'text', required:true},
+      {key:'status', label:'Situação', type:'select', options:['Conforme','Parcial','Não conforme']},
+      {key:'requirement', label:'Requisito', type:'text', full:true, required:true},
+    ],
+    blank:()=>({nr:'', requirement:'', status:'Parcial'})
+  },
+  objective: { listKey:'objectives', title:'Objetivo do SGSST',
+    fields:[
+      {key:'name', label:'Objetivo', type:'text', required:true, full:true},
+      {key:'metric', label:'Indicador', type:'text', full:true},
+      {key:'current', label:'Valor atual', type:'number'},
+      {key:'target', label:'Meta', type:'number'},
+      {key:'dir', label:'Direção da melhoria', type:'select', options:['maior melhor','menor melhor']},
+    ],
+    blank:()=>({name:'', metric:'', current:0, target:100, dir:'maior melhor'})
+  },
+  doc: { listKey:'documents', title:'Documento obrigatório',
+    fields:[
+      {key:'type', label:'Documento', type:'text', required:true, full:true},
+      {key:'due', label:'Validade / vencimento', type:'date', required:true},
+    ],
+    blank:()=>({type:'', due:isoDate(addDays(180))})
+  },
+  nc: { listKey:'ncs', title:'Não conformidade',
+    fields:[
+      {key:'source', label:'Origem', type:'text', required:true},
+      {key:'severity', label:'Severidade', type:'select', options:['Baixa','Média','Alta','Crítica']},
+      {key:'description', label:'Descrição', type:'textarea', full:true, required:true},
+      {key:'responsible', label:'Responsável', type:'text'},
+      {key:'due', label:'Prazo', type:'date', required:true},
+      {key:'status', label:'Status', type:'select', options:['Pendente','Em andamento','Concluída','Atrasada']},
+    ],
+    blank:()=>({source:'', severity:'Média', description:'', responsible:'', due:isoDate(addDays(30)), status:'Pendente'})
+  },
+  audit: { listKey:'audits', title:'Auditoria',
+    fields:[
+      {key:'date', label:'Data', type:'date', required:true},
+      {key:'type', label:'Tipo', type:'text'},
+      {key:'scope', label:'Escopo', type:'text', full:true},
+      {key:'findingsOpen', label:'Achados abertos', type:'number'},
+      {key:'findingsClosed', label:'Achados fechados', type:'number'},
+      {key:'result', label:'Resultado', type:'text', full:true},
+    ],
+    blank:()=>({date:isoDate(today), type:'', scope:'', findingsOpen:0, findingsClosed:0, result:''})
+  },
+  training: { listKey:'trainings', title:'Treinamento normativo',
+    fields:[
+      {key:'nr', label:'Norma', type:'text'},
+      {key:'name', label:'Treinamento', type:'text', full:true, required:true},
+      {key:'total', label:'Total necessário', type:'number', required:true},
+      {key:'completed', label:'Concluídos', type:'number'},
+      {key:'due', label:'Próxima reciclagem', type:'date'},
+    ],
+    blank:()=>({nr:'', name:'', total:1, completed:0, due:isoDate(addDays(180))})
+  },
+};
+
+const COMPANY_FIELDS = [
+  {key:'name', label:'Nome da empresa', type:'text', required:true, full:true},
+  {key:'cnpj', label:'CNPJ', type:'text'},
+  {key:'sector', label:'Setor de atividade', type:'text'},
+  {key:'nr4', label:'Grau de risco (NR‑4)', type:'select', options:['1','2','3','4']},
+  {key:'employees', label:'Nº de colaboradores', type:'number'},
+  {key:'tf', label:'Taxa de Frequência (TF)', type:'number'},
+  {key:'tg', label:'Taxa de Gravidade (TG)', type:'number'},
+  {key:'hht', label:'HHT do período', type:'number'},
+  {key:'asoCompliance', label:'ASO em dia (%)', type:'number'},
+  {key:'epiCompliance', label:'EPI conforme (%)', type:'number'},
+  {key:'legalCompliance', label:'Conformidade legal (%)', type:'number'},
+];
+
+function fieldHTML(f, value){
+  const id = 'f_'+f.key;
+  const val = (value===undefined||value===null) ? '' : value;
+  const req = f.required ? 'required' : '';
+  let input;
+  if(f.type==='select'){
+    input = `<select id="${id}" name="${f.key}" ${req}>${f.options.map(o=>`<option value="${esc(o)}" ${String(o)===String(val)?'selected':''}>${esc(o)}</option>`).join('')}</select>`;
+  } else if(f.type==='textarea'){
+    input = `<textarea id="${id}" name="${f.key}" ${req}>${esc(val)}</textarea>`;
+  } else {
+    input = `<input id="${id}" name="${f.key}" type="${f.type}" ${req} value="${esc(val)}" ${f.type==='number'?'step="any"':''}>`;
+  }
+  return `<div class="form-field ${f.full?'full':''}"><label for="${id}">${f.label}</label>${input}</div>`;
+}
+
+let modalCtx = null;
+
+function openEntityModal(type, id){
+  const co = activeCo();
+  const spec = ENTITY[type];
+  const isEdit = !!id;
+  const item = isEdit ? co[spec.listKey].find(x=>x.id===id) : spec.blank();
+  document.getElementById('modalTitle').textContent = (isEdit?'Editar — ':'Novo — ')+spec.title;
+  document.getElementById('modalFields').innerHTML = spec.fields.map(f=>fieldHTML(f, item[f.key])).join('');
+  modalCtx = { type, id, fields: spec.fields };
+  document.getElementById('modalOverlay').hidden = false;
+  document.getElementById('modalFields').querySelector('input,select,textarea')?.focus();
+}
+
+function openCompanyModal(id, isNew){
+  const co = isNew ? { name:'', cnpj:'', sector:'', nr4:2, employees:0, tf:0, tg:0, hht:0, asoCompliance:0, epiCompliance:0, legalCompliance:0 } : getCompany(id);
+  document.getElementById('modalTitle').textContent = isNew ? 'Nova empresa-cliente' : 'Editar dados da empresa';
+  document.getElementById('modalFields').innerHTML = COMPANY_FIELDS.map(f=>fieldHTML(f, co[f.key])).join('');
+  modalCtx = { type: isNew?'__company_new':'__company', id: isNew?null:id, fields: COMPANY_FIELDS };
+  document.getElementById('modalOverlay').hidden = false;
+  document.getElementById('modalFields').querySelector('input,select,textarea')?.focus();
+}
+
+function closeModal(){ document.getElementById('modalOverlay').hidden = true; modalCtx = null; document.getElementById('modalForm').reset(); }
+
+function readModalValues(fields){
+  const vals = {};
+  fields.forEach(f=>{
+    const el = document.getElementById('f_'+f.key);
+    let v = el.value;
+    if(f.type==='number') v = v===''? 0 : Number(v);
+    vals[f.key] = v;
+  });
+  return vals;
+}
+
+document.getElementById('modalForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  if(!modalCtx) return;
+  const { type, id, fields } = modalCtx;
+  const vals = readModalValues(fields);
+
+  if(type==='__company' || type==='__company_new'){
+    if(vals.nr4!==undefined) vals.nr4 = parseInt(vals.nr4,10)||1;
+    if(type==='__company_new'){
+      const c = company(Object.assign({
+        id:uid('c'), ghes:[], actionPlan:[], iso:{4:0,5:0,6:0,7:0,8:0,9:0,10:0}, legal:[], objectives:[],
+        documents:[], ncs:[], audits:[], trainings:[], trend:{score:[0,0,0,0,0,0], tf:[0,0,0,0,0,0], tg:[0,0,0,0,0,0]}
+      }, vals));
+      DB.companies.push(c); DB.activeCompany = c.id; save(); closeModal(); state.view = 'dashboard'; render();
+    } else {
+      const co = getCompany(id);
+      Object.assign(co, vals);
+      save(); closeModal(); render();
+    }
+    return;
+  }
+
+  const spec = ENTITY[type];
+  const co = activeCo();
+  if(id){
+    const item = co[spec.listKey].find(x=>x.id===id);
+    Object.assign(item, vals);
+  } else {
+    vals.id = uid(type);
+    co[spec.listKey].push(vals);
+  }
+  save(); closeModal(); render();
+});
+
+document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+document.getElementById('modalCancelBtn').addEventListener('click', closeModal);
+document.getElementById('modalOverlay').addEventListener('click', e=>{ if(e.target.id==='modalOverlay') closeModal(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !document.getElementById('modalOverlay').hidden) closeModal(); });
+
+function deleteEntity(type, id){
+  const spec = ENTITY[type];
+  const co = activeCo();
+  if(!confirm('Remover este registro? Esta ação não pode ser desfeita.')) return;
+  co[spec.listKey] = co[spec.listKey].filter(x=>x.id!==id);
+  save(); render();
+}
+
+function deleteCompany(id){
+  if(DB.companies.length<=1){ alert('É necessário manter ao menos uma empresa cadastrada.'); return; }
+  const co = getCompany(id);
+  if(!confirm(`Excluir "${co.name}" e todos os seus dados (riscos, documentos, NC, auditorias, treinamentos)? Esta ação não pode ser desfeita.`)) return;
+  DB.companies = DB.companies.filter(c=>c.id!==id);
+  if(DB.activeCompany===id) DB.activeCompany = DB.companies[0].id;
+  save(); render();
+}
+
 document.getElementById('companySelect').addEventListener('change', e=>{
   DB.activeCompany = e.target.value; save();
   if(!COMPANY_SCOPED.has(state.view)) state.view = 'dashboard';
@@ -1094,20 +1426,7 @@ document.getElementById('sidebar').addEventListener('click', e=>{
 
 document.getElementById('menuBtn').addEventListener('click', ()=> document.getElementById('sidebar').classList.toggle('open'));
 
-document.getElementById('addCoBtn').addEventListener('click', ()=>{
-  const name = prompt('Nome da nova empresa-cliente:');
-  if(!name) return;
-  const sector = prompt('Setor de atividade:', 'Serviços') || 'Serviços';
-  const nr4 = parseInt(prompt('Grau de risco (NR‑4, 1 a 4):', '2'), 10) || 2;
-  const employees = parseInt(prompt('Nº de colaboradores:', '20'), 10) || 20;
-  const c = company({
-    id:uid('c'), name, cnpj:'—', sector, nr4, employees, tf:0, tg:0, asoCompliance:0, epiCompliance:0, legalCompliance:0, hht: employees*2000,
-    ghes:[], actionPlan:[], iso:{4:0,5:0,6:0,7:0,8:0,9:0,10:0}, legal:[], objectives:[], documents:[], ncs:[], audits:[], trainings:[],
-    trend:{score:[0,0,0,0,0,0], tf:[0,0,0,0,0,0], tg:[0,0,0,0,0,0]}
-  });
-  DB.companies.push(c); DB.activeCompany = c.id; save();
-  state.view = 'dashboard'; render();
-});
+document.getElementById('addCoBtn').addEventListener('click', ()=> openCompanyModal(null, true));
 
 document.getElementById('themeBtn').addEventListener('click', ()=>{
   const root = document.documentElement;
@@ -1124,19 +1443,47 @@ document.getElementById('content').addEventListener('click', e=>{
   const goto = e.target.closest('[data-goto-company]');
   if(goto){ DB.activeCompany = goto.dataset.gotoCompany; save(); state.view='dashboard'; render(); return; }
   if(e.target.id === 'resetDemoBtn'){ resetDemo(); return; }
+  if(e.target.id === 'addCoBtn2'){ openCompanyModal(null, true); return; }
+
+  const addBtn = e.target.closest('[data-add-entity]');
+  if(addBtn){ openEntityModal(addBtn.dataset.addEntity); return; }
+
+  const editBtn = e.target.closest('[data-edit-entity]');
+  if(editBtn){ openEntityModal(editBtn.dataset.editEntity, editBtn.dataset.id); return; }
+
+  const delBtn = e.target.closest('[data-del-entity]');
+  if(delBtn){ deleteEntity(delBtn.dataset.delEntity, delBtn.dataset.id); return; }
+
+  const editCo = e.target.closest('[data-edit-company]');
+  if(editCo){ openCompanyModal(editCo.dataset.editCompany, false); return; }
+
+  const delCo = e.target.closest('[data-del-company]');
+  if(delCo){ deleteCompany(delCo.dataset.delCompany); return; }
 });
 
 document.getElementById('content').addEventListener('change', e=>{
   const actId = e.target.dataset.actionStatus;
   if(actId){
     const co = activeCo(); const a = co.actionPlan.find(x=>x.id===actId);
-    if(a){ a.status = e.target.value; if(a.status!=='Atrasado' && a.due<0 && a.status!=='Concluído') { /* mantém prazo real, status manual pode divergir do prazo */ } save(); render(); }
+    if(a){ a.status = e.target.value; save(); render(); }
     return;
   }
   const ncId = e.target.dataset.ncStatus;
   if(ncId){
     const co = activeCo(); const n = co.ncs.find(x=>x.id===ncId);
     if(n){ n.status = e.target.value; save(); render(); }
+    return;
+  }
+  const isoKey = e.target.dataset.isoKey;
+  if(isoKey){
+    const co = activeCo(); co.iso[isoKey] = clamp(Math.round(Number(e.target.value)||0), 0, 100);
+    save(); setTimeout(render, 0); // adia o re-render: evita colidir com o blur nativo do <input number>
+    return;
+  }
+  const companyField = e.target.dataset.companyField;
+  if(companyField){
+    const co = activeCo(); co[companyField] = clamp(Number(e.target.value)||0, 0, 100);
+    save(); setTimeout(render, 0); // idem
     return;
   }
 });
