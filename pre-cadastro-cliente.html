@@ -1,0 +1,1081 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FOR-LT-001 · Pré-Cadastro do Cliente · E-Soluções Ocupacionais</title>
+<meta name="description" content="Ficha digital de pré-cadastro do cliente (FOR-LT-001): dados da empresa, setores, cargos e anexos, com conferência automática, exportação para planilha, SOC e Orbit Gestão, e envio ao SESMT.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230F7A68'/%3E%3Ctext x='50' y='66' font-size='54' text-anchor='middle' fill='white' font-family='Arial'%3E%F0%9F%93%8B%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#F4F7F5; --paper-raised:#FFFFFF; --paper-sunken:#E9EFEC;
+  --ink:#132420; --ink-soft:#4B5B55; --ink-faint:#7C8B85;
+  --line:#D7E1DC; --line-strong:#B9C8C1;
+  --teal-700:#0B5A4E; --teal-600:#0F7A68; --teal-500:#159A82; --teal-100:#DCEEE8;
+  --amber-700:#8A5A0B; --amber-600:#B4740E; --amber-100:#F8E9CF;
+  --green-700:#1F6B45; --green-600:#2E7D53; --green-100:#E1F0E6;
+  --red-700:#8C2E2E; --red-600:#B23A3A; --red-100:#F8E6E6;
+  --focus:#0F7A68;
+  --shadow: 0 1px 2px rgba(19,36,32,.06), 0 6px 16px -8px rgba(19,36,32,.18);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0E1613; --paper-raised:#141F1B; --paper-sunken:#0A100E;
+    --ink:#E7F1EC; --ink-soft:#AFC2BB; --ink-faint:#7C9089;
+    --line:#233531; --line-strong:#31473F;
+    --teal-700:#6FD3B9; --teal-600:#49BFA0; --teal-500:#2EA98A; --teal-100:#12332B;
+    --amber-700:#F0C374; --amber-600:#D89A3D; --amber-100:#2E2411;
+    --green-700:#8FDBAE; --green-600:#5CBE8A; --green-100:#12301F;
+    --red-700:#F0A3A3; --red-600:#DD7373; --red-100:#341717;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 24px -10px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0E1613; --paper-raised:#141F1B; --paper-sunken:#0A100E;
+  --ink:#E7F1EC; --ink-soft:#AFC2BB; --ink-faint:#7C9089;
+  --line:#233531; --line-strong:#31473F;
+  --teal-700:#6FD3B9; --teal-600:#49BFA0; --teal-500:#2EA98A; --teal-100:#12332B;
+  --amber-700:#F0C374; --amber-600:#D89A3D; --amber-100:#2E2411;
+  --green-700:#8FDBAE; --green-600:#5CBE8A; --green-100:#12301F;
+  --red-700:#F0A3A3; --red-600:#DD7373; --red-100:#341717;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 24px -10px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box;}
+html,body{background:var(--paper); color:var(--ink);}
+body{margin:0; font-family:"Source Serif 4",Georgia,serif; font-size:16px; line-height:1.55; -webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4,.ui{font-family:"Archivo","Helvetica Neue",Arial,sans-serif; text-wrap:balance;}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums;}
+a{color:var(--teal-700);}
+button{font:inherit;}
+input,select,textarea{font-family:"Source Serif 4",Georgia,serif; font-size:.95rem;}
+
+/* ---------- layout shell ---------- */
+.app-shell{max-width:1080px; margin:0 auto; padding:0 18px 64px;}
+.topbar{position:sticky; top:0; z-index:20; background:var(--paper); border-bottom:1px solid var(--line); padding:14px 0; display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
+.brand{display:flex; align-items:center; gap:10px; min-width:0;}
+.brand .mark{width:38px; height:38px; border-radius:10px; background:var(--teal-700); color:#fff; display:flex; align-items:center; justify-content:center; font-family:Archivo; font-weight:800; font-size:.78rem; flex:none;}
+.brand .name{font-family:Archivo; font-weight:800; font-size:1.02rem; line-height:1.2;}
+.brand .sub{font-family:"IBM Plex Mono"; font-size:.68rem; color:var(--ink-faint); letter-spacing:.02em;}
+.spacer{flex:1;}
+.status-pill{font-family:Archivo; font-weight:700; font-size:.72rem; padding:5px 12px; border-radius:99px; white-space:nowrap;}
+.status-pill.pendente{background:var(--amber-100); color:var(--amber-700);}
+.status-pill.pronto{background:var(--green-100); color:var(--green-700);}
+.theme-btn{width:36px; height:36px; border-radius:10px; border:1px solid var(--line-strong); background:var(--paper-raised); color:var(--ink); cursor:pointer;}
+
+.btn{font-family:Archivo; font-weight:700; font-size:.82rem; border-radius:10px; border:1px solid transparent; padding:9px 15px; display:inline-flex; align-items:center; gap:7px; cursor:pointer; text-decoration:none;}
+.btn.primary{background:var(--teal-700); color:#fff;}
+.btn.primary:hover{background:var(--teal-600);}
+.btn.ghost{background:var(--paper-raised); border-color:var(--line-strong); color:var(--ink);}
+.btn.ghost:hover{background:var(--paper-sunken);}
+.btn.danger{background:var(--paper-raised); border-color:var(--red-600); color:var(--red-700);}
+.btn.small{padding:6px 11px; font-size:.74rem; border-radius:8px;}
+.btn:disabled{opacity:.45; cursor:not-allowed;}
+
+/* ---------- stepper ---------- */
+.stepper{display:flex; gap:6px; overflow-x:auto; padding:14px 0 6px; margin-bottom:6px;}
+.step-btn{flex:none; font-family:Archivo; font-weight:700; font-size:.72rem; padding:8px 13px; border-radius:99px; border:1px solid var(--line-strong); background:var(--paper-raised); color:var(--ink-soft); cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:6px;}
+.step-btn .n{width:18px; height:18px; border-radius:50%; background:var(--paper-sunken); color:var(--ink-faint); display:flex; align-items:center; justify-content:center; font-size:.66rem;}
+.step-btn.active{background:var(--teal-700); border-color:var(--teal-700); color:#fff;}
+.step-btn.active .n{background:rgba(255,255,255,.25); color:#fff;}
+.step-btn.done .n{background:var(--green-600); color:#fff;}
+.step-btn.error .n{background:var(--red-600); color:#fff;}
+
+/* ---------- cards / forms ---------- */
+.card{background:var(--paper-raised); border:1px solid var(--line); border-radius:16px; padding:22px 22px 24px; box-shadow:var(--shadow); margin-bottom:18px;}
+.card h2{font-size:1.15rem; margin:0 0 4px;}
+.card .lede{color:var(--ink-soft); font-size:.9rem; margin:0 0 18px;}
+.field-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px 18px;}
+.field-grid.one{grid-template-columns:1fr;}
+@media (max-width:680px){ .field-grid{grid-template-columns:1fr;} }
+.field{display:flex; flex-direction:column; gap:5px;}
+.field.span2{grid-column:1/-1;}
+.field label{font-family:Archivo; font-weight:600; font-size:.78rem; color:var(--ink-soft); display:flex; gap:4px; align-items:baseline;}
+.field label .req{color:var(--red-600);}
+.field label .hint{font-weight:500; color:var(--ink-faint); font-size:.7rem;}
+.field input, .field select, .field textarea{
+  border:1px solid var(--line-strong); border-radius:10px; background:var(--paper); color:var(--ink);
+  padding:9px 11px; width:100%;
+}
+.field input:focus, .field select:focus, .field textarea:focus{outline:2px solid var(--focus); outline-offset:1px;}
+.field textarea{resize:vertical; min-height:56px;}
+.field .err-msg{font-size:.72rem; color:var(--red-600); font-family:Archivo; display:none;}
+.field.invalid input, .field.invalid select, .field.invalid textarea{border-color:var(--red-600);}
+.field.invalid .err-msg{display:block;}
+
+/* ---------- tables ---------- */
+.tbl-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:12px;}
+table.data{width:100%; border-collapse:collapse; min-width:760px;}
+table.data th{font-family:Archivo; font-weight:700; font-size:.68rem; text-transform:uppercase; letter-spacing:.03em; color:var(--ink-faint); text-align:left; padding:9px 10px; background:var(--paper-sunken); border-bottom:1px solid var(--line); white-space:nowrap;}
+table.data td{padding:6px 8px; border-bottom:1px solid var(--line); vertical-align:top;}
+table.data tr:last-child td{border-bottom:none;}
+table.data input, table.data select, table.data textarea{border:1px solid var(--line-strong); border-radius:8px; padding:6px 8px; width:100%; background:var(--paper); color:var(--ink); font-size:.86rem;}
+table.data textarea{min-height:38px; resize:vertical;}
+table.data td.auto{font-family:"IBM Plex Mono"; font-size:.78rem; color:var(--ink-faint); white-space:nowrap;}
+.row-del{border:none; background:none; color:var(--red-600); cursor:pointer; font-size:1rem; padding:4px;}
+.add-row-btn{margin-top:10px;}
+.badge{display:inline-block; font-family:Archivo; font-weight:700; font-size:.66rem; padding:2px 8px; border-radius:99px;}
+.badge.ok{background:var(--green-100); color:var(--green-700);}
+.badge.warn{background:var(--red-100); color:var(--red-700);}
+.badge.info{background:var(--teal-100); color:var(--teal-700);}
+.badge.muted{background:var(--paper-sunken); color:var(--ink-faint);}
+
+/* ---------- instructions / lists ---------- */
+.instr-list{margin:0; padding-left:20px;}
+.instr-list li{margin-bottom:8px;}
+.callout{border-radius:12px; padding:14px 16px; font-size:.87rem; margin-bottom:14px;}
+.callout.teal{background:var(--teal-100); color:var(--teal-700);}
+.callout.amber{background:var(--amber-100); color:var(--amber-700);}
+.callout.green{background:var(--green-100); color:var(--green-700);}
+.callout.red{background:var(--red-100); color:var(--red-700);}
+.legend{display:flex; gap:16px; flex-wrap:wrap; font-family:Archivo; font-size:.74rem; font-weight:600;}
+.legend span{display:flex; align-items:center; gap:6px;}
+.legend i{width:14px; height:14px; border-radius:4px; display:inline-block;}
+.legend .amarelo i{background:#FCEFA1; border:1px solid #D8C24A;}
+.legend .cinza i{background:var(--paper-sunken); border:1px solid var(--line-strong);}
+.legend .auto i{background:var(--teal-100); border:1px solid var(--teal-500);}
+
+/* ---------- conferencia ---------- */
+.check-tbl td:first-child{max-width:360px;}
+.status-banner{display:flex; align-items:center; gap:14px; padding:18px 20px; border-radius:14px; margin-bottom:18px; flex-wrap:wrap;}
+.status-banner.pendente{background:var(--amber-100);}
+.status-banner.pronto{background:var(--green-100);}
+.status-banner .big{font-family:Archivo; font-weight:800; font-size:1.05rem;}
+.status-banner.pendente .big{color:var(--amber-700);}
+.status-banner.pronto .big{color:var(--green-700);}
+.status-banner .sub{font-size:.82rem; color:var(--ink-soft);}
+.jump-link{font-family:Archivo; font-weight:700; font-size:.74rem; color:var(--teal-700); cursor:pointer; text-decoration:underline; background:none; border:none; padding:0;}
+
+/* ---------- export cards ---------- */
+.export-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+@media (max-width:820px){ .export-grid{grid-template-columns:1fr;} }
+.export-card{border:1px solid var(--line); border-radius:14px; padding:18px; background:var(--paper-sunken); display:flex; flex-direction:column; gap:10px;}
+.export-card .ic{font-size:1.6rem;}
+.export-card h3{margin:0; font-size:.98rem;}
+.export-card p{margin:0; font-size:.82rem; color:var(--ink-soft); flex:1;}
+.export-card .filehint{font-family:"IBM Plex Mono"; font-size:.68rem; color:var(--ink-faint); word-break:break-all;}
+
+.send-box{background:var(--teal-700); color:#fff; border-radius:16px; padding:24px; margin-top:8px;}
+.send-box h2{color:#fff;}
+.send-box .lede{color:rgba(255,255,255,.82);}
+.send-box .field label{color:rgba(255,255,255,.85);}
+.send-box .field input, .send-box .field textarea{background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.35); color:#fff;}
+.send-box .field input::placeholder, .send-box .field textarea::placeholder{color:rgba(255,255,255,.5);}
+.send-box .btn.ghost{background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.4); color:#fff;}
+.send-box .btn.ghost:hover{background:rgba(255,255,255,.22);}
+.send-box .btn.primary{background:#fff; color:var(--teal-700);}
+.send-box .btn.primary:hover{background:var(--paper-sunken);}
+
+.step-nav{display:flex; justify-content:space-between; gap:10px; margin-top:6px;}
+footer.foot{margin-top:30px; padding-top:18px; border-top:1px solid var(--line); font-size:.76rem; color:var(--ink-faint); text-align:center;}
+.toast{position:fixed; bottom:18px; left:50%; transform:translateX(-50%); background:var(--ink); color:var(--paper); font-family:Archivo; font-weight:600; font-size:.82rem; padding:11px 18px; border-radius:99px; box-shadow:var(--shadow); z-index:60; opacity:0; pointer-events:none; transition:opacity .25s, transform .25s;}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(-6px);}
+
+@media print{
+  .topbar,.stepper,.step-nav,.btn,.export-grid,.legend,.toast,.add-row-btn,.row-del,select.step-jump{display:none !important;}
+  body{background:#fff;}
+  .card{box-shadow:none; border:1px solid #999; page-break-inside:avoid;}
+  .app-shell{max-width:100%; padding:0;}
+  section[data-step]{display:block !important; margin-bottom:14px;}
+  .send-box{display:none !important;}
+}
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+  <header class="topbar">
+    <div class="brand">
+      <div class="mark">SST</div>
+      <div style="min-width:0;">
+        <div class="name">Pré-Cadastro do Cliente</div>
+        <div class="sub">FOR-LT-001 · rev.01 · vinc. PRO-LT-001</div>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <span class="status-pill pendente ui" id="topStatus">PENDENTE</span>
+    <button class="theme-btn" id="themeBtn" title="Alternar tema" aria-label="Alternar tema">◐</button>
+  </header>
+
+  <nav class="stepper ui" id="stepper"></nav>
+
+  <main id="content"></main>
+
+  <footer class="foot">
+    Ficha digital complementar ao formulário FOR-LT-001 (E-Soluções Ocupacionais) · Funciona 100% offline após o primeiro carregamento — seus dados ficam salvos apenas neste navegador (localStorage), nada é enviado a servidores.<br>
+    Tratamento de dados conforme a LGPD, exclusivamente para elaboração dos programas e laudos de SST. Dúvidas: <a href="mailto:comercial@esolucoesocupacionais.com.br">comercial@esolucoesocupacionais.com.br</a> · (21) 98790-2000
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="vendor/xlsx.full.min.js"></script>
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   ESTADO
+   ============================================================ */
+var STORAGE_KEY = 'forLt001_precadastro_v1';
+
+var ANEXOS_FIXOS = [
+  {doc:'Relação de empregados (nome, cargo, CBO, setor, admissão) – eSocial/folha', obrigatorio:'Sim'},
+  {doc:'Planta baixa / layout ou croqui dos setores', obrigatorio:'Sim'},
+  {doc:'FDS dos produtos químicos utilizados', obrigatorio:'Sim'},
+  {doc:'Lista de máquinas e equipamentos', obrigatorio:'Não'},
+  {doc:'Organograma', obrigatorio:'Não'},
+  {doc:'PGR, LTCAT, PCMSO e laudos anteriores', obrigatorio:'Não'},
+  {doc:'CATs e afastamentos dos últimos 3 anos', obrigatorio:'Não'},
+  {doc:'Relação de empresas terceirizadas atuantes', obrigatorio:'Não'}
+];
+
+function blankEmpresa(){
+  return {
+    razaoSocial:'', cnpj:'', cnae:'', grauRisco:'', endereco:'',
+    nEmpregados:'', nTerceiros:'', turnos:'', contatoNome:'', contatoCargo:'',
+    telefone:'', email:'', respRH:'', preenchidoPor:'', dataPreenchimento: todayISO()
+  };
+}
+function blankSetor(){ return {nome:'', sigla:'', descricao:'', nEmpregados:'', observacoes:''}; }
+function blankCargo(){ return {setorIdx:'', cargo:'', cbo:'', nTrab:'', turno:'', atividades:'', produtos:'', observacoes:''}; }
+
+function defaultState(){
+  return {
+    fichaId: 'FOR-LT-001-' + Date.now().toString(36).toUpperCase(),
+    criadoEm: new Date().toISOString(),
+    empresa: blankEmpresa(),
+    setores: [blankSetor()],
+    cargos: [blankCargo()],
+    anexos: ANEXOS_FIXOS.map(function(a){ return {doc:a.doc, obrigatorio:a.obrigatorio, enviado:false, nomeArquivo:'', observacoes:''}; }),
+    anexosExtra: [],
+    envio: {destinatario:'', responsavelSst:''}
+  };
+}
+
+var state = loadState();
+var currentStep = 0;
+
+var STEPS = [
+  {key:'instrucoes', label:'Instruções'},
+  {key:'empresa', label:'01 · Empresa'},
+  {key:'setores', label:'02 · Setores'},
+  {key:'cargos', label:'03 · Cargos'},
+  {key:'anexos', label:'04 · Anexos'},
+  {key:'conferencia', label:'05 · Conferência'},
+  {key:'envio', label:'06 · Envio'}
+];
+
+/* ============================================================
+   PERSISTÊNCIA LOCAL (offline-first)
+   ============================================================ */
+function loadState(){
+  try{
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return defaultState();
+    var parsed = JSON.parse(raw);
+    var base = defaultState();
+    return Object.assign(base, parsed, {
+      empresa: Object.assign(blankEmpresa(), parsed.empresa||{}),
+      setores: (parsed.setores&&parsed.setores.length)? parsed.setores : base.setores,
+      cargos: (parsed.cargos&&parsed.cargos.length)? parsed.cargos : base.cargos,
+      anexos: (parsed.anexos&&parsed.anexos.length===ANEXOS_FIXOS.length)? parsed.anexos : base.anexos,
+      anexosExtra: parsed.anexosExtra||[],
+      envio: Object.assign({destinatario:'',responsavelSst:''}, parsed.envio||{})
+    });
+  }catch(e){ console.warn('Rascunho local inválido, iniciando novo.', e); return defaultState(); }
+}
+var saveTimer=null;
+function persist(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(function(){
+    state.atualizadoEm = new Date().toISOString();
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){ /* quota/privado: ignora silenciosamente */ }
+  }, 250);
+}
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function todayISO(){ var d=new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function pad(n){ return n<10? '0'+n : ''+n; }
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function onlyDigits(s){ return String(s||'').replace(/\D/g,''); }
+function maskCNPJ(v){
+  v = onlyDigits(v).slice(0,14);
+  var out=v;
+  if(v.length>12) out = v.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{1,2})/, '$1.$2.$3/$4-$5');
+  else if(v.length>8) out = v.replace(/(\d{2})(\d{3})(\d{3})(\d{1,4})/, '$1.$2.$3/$4');
+  else if(v.length>5) out = v.replace(/(\d{2})(\d{3})(\d{1,3})/, '$1.$2.$3');
+  else if(v.length>2) out = v.replace(/(\d{2})(\d{1,3})/, '$1.$2');
+  return out;
+}
+function setorLabel(s, i){ return (s.nome && s.nome.trim()) ? s.nome.trim() : 'Setor '+(i+1)+' (sem nome)'; }
+function setorId(i){ return 'ST-'+pad(i+1); }
+function toast(msg){
+  var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._h); t._h=setTimeout(function(){ t.classList.remove('show'); }, 2600);
+}
+function download(filename, content, mime){
+  var blob = new Blob([content], {type: mime||'text/plain;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+}
+function csvCell(v){
+  v = String(v==null?'':v);
+  if(/[",;\n]/.test(v)) v = '"'+v.replace(/"/g,'""')+'"';
+  return v;
+}
+function toCSV(rows){
+  return '﻿'+rows.map(function(r){ return r.map(csvCell).join(';'); }).join('\r\n');
+}
+
+/* ============================================================
+   CONFERÊNCIA (mesma lógica do FOR-LT-001 · aba 05)
+   ============================================================ */
+function computeConferencia(){
+  var emp = state.empresa;
+  var camposObrig = [
+    ['razaoSocial','Razão social'], ['cnpj','CNPJ'], ['endereco','Endereço da unidade'],
+    ['nEmpregados','Nº total de empregados'], ['contatoNome','Contato para a visita'],
+    ['telefone','Telefone/WhatsApp'], ['email','E-mail']
+  ];
+  var empresaFaltando = camposObrig.filter(function(c){ return !String(emp[c[0]]||'').trim(); });
+
+  var setoresValidos = state.setores.filter(function(s){ return s.nome && s.nome.trim(); });
+  var cargosValidos = state.cargos.filter(function(c){ return c.setorIdx!=='' && c.setorIdx!=null && c.cargo && c.cargo.trim(); });
+
+  var cargosComErro = state.cargos.filter(function(c){
+    if(!(c.cargo && c.cargo.trim())) return false;
+    var setorOk = c.setorIdx!=='' && c.setorIdx!=null && state.setores[c.setorIdx];
+    var cboOk = /^\d{6}$/.test(String(c.cbo||''));
+    var nTrabOk = Number(c.nTrab)>0;
+    var atividadesOk = c.atividades && c.atividades.trim();
+    return !(setorOk && cboOk && nTrabOk && atividadesOk);
+  });
+
+  var setoresComCargo = {};
+  cargosValidos.forEach(function(c){ setoresComCargo[c.setorIdx]=true; });
+  var setoresOrfaos = [];
+  state.setores.forEach(function(s,i){ if(s.nome && s.nome.trim() && !setoresComCargo[i]) setoresOrfaos.push(i); });
+
+  var totalTrabCargos = cargosValidos.reduce(function(a,c){ return a+(Number(c.nTrab)||0); }, 0);
+  var nEmpInformado = Number(emp.nEmpregados)||0;
+  var diffQuantitativo = Math.abs(totalTrabCargos - nEmpInformado);
+
+  var anexosTodos = state.anexos.concat(state.anexosExtra);
+  var anexosObrigNaoEnviados = anexosTodos.filter(function(a){ return a.obrigatorio==='Sim' && !a.enviado; });
+
+  var itens = [
+    {label:'Dados obrigatórios da empresa preenchidos', valor: empresaFaltando.length, situacao: empresaFaltando.length? 'PENDENTE':'OK', onde:'empresa',
+     detalhe: empresaFaltando.length? ('Faltando: '+empresaFaltando.map(function(c){return c[1];}).join(', ')) : 'Completo'},
+    {label:'Setores cadastrados', valor: setoresValidos.length, situacao: setoresValidos.length? 'OK':'PENDENTE', onde:'setores', detalhe: setoresValidos.length+' setor(es)'},
+    {label:'Cargos cadastrados', valor: cargosValidos.length, situacao: cargosValidos.length? 'OK':'PENDENTE', onde:'cargos', detalhe: cargosValidos.length+' cargo(s)'},
+    {label:'Linhas de cargo com erro (setor, CBO, nº trab. ou atividade)', valor: cargosComErro.length, situacao: cargosComErro.length? 'PENDENTE':'OK', onde:'cargos', detalhe: cargosComErro.length? 'Revise CBO (6 dígitos), setor, nº de trabalhadores e atividades' : 'Sem pendências'},
+    {label:'Setores sem nenhum cargo vinculado', valor: setoresOrfaos.length, situacao: setoresOrfaos.length? 'PENDENTE':'OK', onde:'cargos', detalhe: setoresOrfaos.length? setoresOrfaos.map(function(i){return setorLabel(state.setores[i],i);}).join(', ') : 'Sem pendências'},
+    {label:'Total de trabalhadores na aba de cargos', valor: totalTrabCargos, situacao:'OK', onde:'cargos', detalhe: totalTrabCargos+' trabalhador(es) somados'},
+    {label:'Diferença entre total de cargos e nº de empregados informado', valor: diffQuantitativo, situacao: diffQuantitativo? 'VERIFICAR':'OK', onde:'empresa', detalhe: diffQuantitativo? 'Pode ocorrer por afastados/terceiros — explique em Observações' : 'Quantitativos batem'},
+    {label:'Anexos obrigatórios não enviados', valor: anexosObrigNaoEnviados.length, situacao: anexosObrigNaoEnviados.length? 'PENDENTE':'OK', onde:'anexos', detalhe: anexosObrigNaoEnviados.length? anexosObrigNaoEnviados.map(function(a){return a.doc;}).join('; ') : 'Todos enviados'}
+  ];
+
+  var bloqueante = empresaFaltando.length>0 || setoresValidos.length===0 || cargosValidos.length===0 ||
+                    cargosComErro.length>0 || setoresOrfaos.length>0 || anexosObrigNaoEnviados.length>0;
+
+  return {
+    itens: itens, status: bloqueante? 'PENDENTE':'PRONTO PARA ENVIO',
+    setoresValidos: setoresValidos, cargosValidos: cargosValidos, cargosComErro: cargosComErro,
+    setoresOrfaos: setoresOrfaos, anexosObrigNaoEnviados: anexosObrigNaoEnviados, empresaFaltando: empresaFaltando
+  };
+}
+
+/* ============================================================
+   RENDER — STEPPER
+   ============================================================ */
+function renderStepper(){
+  var conf = computeConferencia();
+  var html = STEPS.map(function(s,i){
+    var cls='step-btn'+(i===currentStep?' active':'');
+    if(i===5 && conf.status==='PRONTO PARA ENVIO') cls+=' done';
+    return '<button class="'+cls+'" data-step="'+i+'"><span class="n">'+(i+1)+'</span>'+esc(s.label)+'</button>';
+  }).join('');
+  document.getElementById('stepper').innerHTML = html;
+  var pill = document.getElementById('topStatus');
+  pill.textContent = conf.status;
+  pill.className = 'status-pill ui '+(conf.status==='PRONTO PARA ENVIO'?'pronto':'pendente');
+}
+
+/* ============================================================
+   RENDER — CONTEÚDO POR ETAPA
+   ============================================================ */
+function renderContent(){
+  var el = document.getElementById('content');
+  var fn = [renderInstrucoes, renderEmpresa, renderSetores, renderCargos, renderAnexos, renderConferencia, renderEnvio][currentStep];
+  el.innerHTML = fn();
+  wireStepEvents();
+  var stepNav = '<div class="step-nav">'+
+    (currentStep>0? '<button class="btn ghost" data-nav="-1">← Voltar</button>':'<span></span>')+
+    (currentStep<STEPS.length-1? '<button class="btn primary" data-nav="1">Continuar →</button>':'<span></span>')+
+    '</div>';
+  el.insertAdjacentHTML('beforeend', stepNav);
+  el.querySelectorAll('[data-nav]').forEach(function(b){
+    b.addEventListener('click', function(){ goStep(currentStep + Number(b.dataset.nav)); });
+  });
+}
+
+function goStep(i){
+  currentStep = Math.max(0, Math.min(STEPS.length-1, i));
+  window.scrollTo({top:0, behavior:'smooth'});
+  renderStepper(); renderContent();
+}
+
+/* ---- 00 Instruções ---- */
+function renderInstrucoes(){
+  return '' +
+  '<div class="card">' +
+    '<h2>FOR-LT-001 · Ficha de Pré-Cadastro do Cliente</h2>' +
+    '<p class="lede">E-Soluções Ocupacionais · documento controlado · vinculado ao procedimento PRO-LT-001 · versão web (rev.01), equivalente à planilha original.</p>' +
+    '<div class="callout teal"><strong>Como preencher</strong>' +
+      '<ol class="instr-list" style="margin-top:8px;">' +
+        '<li>Preencha na ordem das etapas: <strong>01 Empresa → 02 Setores → 03 Cargos → 04 Anexos</strong>. Seus dados são salvos automaticamente neste navegador a cada alteração.</li>' +
+        '<li>Use como base a relação de empregados do eSocial ou da folha de pagamento. Escreva o cargo exatamente como está no registro.</li>' +
+        '<li>Na etapa 03, escolha o setor na lista (ela vem da etapa 02). O CBO deve ter 6 dígitos.</li>' +
+        '<li>Antes de enviar, confira a etapa <strong>05 Conferência</strong>. O status precisa estar <strong>PRONTO PARA ENVIO</strong>.</li>' +
+        '<li>Em caso de dúvida, deixe o campo em branco e escreva em Observações — nossa equipe confirma na visita técnica.</li>' +
+      '</ol>' +
+    '</div>' +
+    '<div class="callout amber"><strong>Proteção de dados (LGPD):</strong> as informações são tratadas exclusivamente para a elaboração dos programas e laudos de SST da sua empresa (GRO/PGR, LTCAT, PCMSO, ISO 45001).</div>' +
+    '<p class="lede" style="margin-bottom:6px;">Contato: <a href="mailto:comercial@esolucoesocupacionais.com.br">comercial@esolucoesocupacionais.com.br</a> · (21) 98790-2000</p>' +
+    '<div class="legend" style="margin-top:14px;">' +
+      '<span class="amarelo"><i></i>Campo a preencher</span>' +
+      '<span class="cinza"><i></i>Exemplo / opcional</span>' +
+      '<span class="auto"><i></i>Calculado automaticamente</span>' +
+    '</div>' +
+  '</div>' +
+  '<div class="card">' +
+    '<h2>Este cadastro em números</h2>' +
+    '<p class="lede">Ficha: <span class="mono">'+esc(state.fichaId)+'</span> · criada em '+esc(new Date(state.criadoEm).toLocaleString('pt-BR'))+'</p>' +
+    '<div class="field-grid">' +
+      infoTile('Setores informados', state.setores.filter(function(s){return s.nome&&s.nome.trim();}).length) +
+      infoTile('Cargos informados', state.cargos.filter(function(c){return c.cargo&&c.cargo.trim();}).length) +
+      infoTile('Anexos marcados como enviados', state.anexos.concat(state.anexosExtra).filter(function(a){return a.enviado;}).length+' / '+(state.anexos.length+state.anexosExtra.length)) +
+      infoTile('Status atual', computeConferencia().status) +
+    '</div>' +
+    '<div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">' +
+      '<button class="btn ghost small" id="btnResetAll">🗑 Novo cadastro (limpar tudo)</button>' +
+      '<button class="btn ghost small" id="btnExportJson">💾 Exportar rascunho (.json)</button>' +
+      '<label class="btn ghost small" style="cursor:pointer;">📂 Importar rascunho (.json)<input type="file" id="fileImportJson" accept=".json" style="display:none;"></label>' +
+    '</div>' +
+  '</div>';
+}
+function infoTile(label, value){
+  return '<div class="field"><label>'+esc(label)+'</label><div class="mono" style="font-size:1.1rem; font-weight:700;">'+esc(value)+'</div></div>';
+}
+
+/* ---- 01 Empresa ---- */
+var EMPRESA_FIELDS = [
+  ['razaoSocial','Razão social','text',true],
+  ['cnpj','CNPJ (somente números)','cnpj',true],
+  ['cnae','CNAE principal','text',true],
+  ['grauRisco','Grau de risco (NR-04)','grauRisco',true],
+  ['endereco','Endereço da unidade avaliada','textarea',true],
+  ['nEmpregados','Nº total de empregados próprios','number',true],
+  ['nTerceiros','Nº de terceiros atuando na unidade','number',false],
+  ['turnos','Turnos de trabalho','turnos',false],
+  ['contatoNome','Contato para a visita (nome)','text',true],
+  ['contatoCargo','Cargo do contato','text',false],
+  ['telefone','Telefone / WhatsApp','tel',true],
+  ['email','E-mail','email',true],
+  ['respRH','Responsável pelo RH / eSocial','text',false],
+  ['preenchidoPor','Preenchido por','text',true],
+  ['dataPreenchimento','Data do preenchimento','date',true]
+];
+function renderEmpresa(){
+  var rows = EMPRESA_FIELDS.map(function(f){
+    var key=f[0], label=f[1], type=f[2], req=f[3];
+    var val = esc(state.empresa[key]);
+    var input;
+    if(type==='textarea'){
+      input = '<textarea data-emp="'+key+'" rows="2">'+val+'</textarea>';
+    } else if(type==='grauRisco'){
+      input = '<select data-emp="'+key+'">'+['','1','2','3','4'].map(function(v){
+        return '<option value="'+v+'"'+(state.empresa[key]===v?' selected':'')+'>'+(v?('Grau '+v):'Selecione…')+'</option>';
+      }).join('')+'</select>';
+    } else if(type==='turnos'){
+      input = '<input list="turnoOpts" data-emp="'+key+'" value="'+val+'">' +
+        '<datalist id="turnoOpts"><option>Administrativo (seg. a sex.)</option><option>Turno único diurno</option><option>1º Turno</option><option>2º Turno</option><option>3º Turno (noturno)</option><option>Revezamento 12x36</option><option>Revezamento 6x1</option><option>Home office / Remoto</option></datalist>';
+    } else if(type==='cnpj'){
+      input = '<input type="text" inputmode="numeric" maxlength="18" data-emp="'+key+'" value="'+val+'" placeholder="00.000.000/0000-00">';
+    } else {
+      input = '<input type="'+type+'" data-emp="'+key+'" value="'+val+'">';
+    }
+    return '<div class="field'+(type==='textarea'?' span2':'')+'" data-field="'+key+'">' +
+      '<label>'+esc(label)+(req?' <span class="req">*</span>':' <span class="hint">(opcional)</span>')+'</label>' +
+      input + '<div class="err-msg">Campo obrigatório.</div>' +
+    '</div>';
+  }).join('');
+  return '<div class="card"><h2>01 · Dados da empresa</h2><p class="lede">Preencha os dados da empresa e da unidade que será avaliada.</p>' +
+    '<div class="field-grid">'+rows+'</div></div>';
+}
+
+/* ---- 02 Setores ---- */
+function renderSetores(){
+  var rows = state.setores.map(function(s,i){
+    return '<tr data-idx="'+i+'">' +
+      '<td class="auto">'+setorId(i)+'</td>' +
+      '<td><input data-setor="nome" value="'+esc(s.nome)+'" placeholder="Ex.: Manutenção"></td>' +
+      '<td><input data-setor="sigla" value="'+esc(s.sigla)+'" maxlength="3" style="width:64px; text-transform:uppercase;" placeholder="MAN"></td>' +
+      '<td><textarea data-setor="descricao" rows="1" placeholder="Máquinas, processos, produtos">'+esc(s.descricao)+'</textarea></td>' +
+      '<td><input type="number" min="0" data-setor="nEmpregados" value="'+esc(s.nEmpregados)+'" style="width:76px;"></td>' +
+      '<td><input data-setor="observacoes" value="'+esc(s.observacoes)+'"></td>' +
+      '<td class="auto">'+cargosDoSetor(i).length+'</td>' +
+      '<td><button class="row-del" data-del-setor="'+i+'" title="Remover setor">✕</button></td>' +
+    '</tr>';
+  }).join('');
+  return '<div class="card"><h2>02 · Setores da unidade</h2>' +
+    '<p class="lede">ID é automático. Sigla: até 3 letras (usada para identificar fotos/registros da visita).</p>' +
+    '<div class="tbl-wrap"><table class="data"><thead><tr>' +
+      '<th>ID</th><th>Setor *</th><th>Sigla</th><th>Descrição do ambiente</th><th>Nº empreg.</th><th>Observações</th><th>Cargos (auto)</th><th></th>' +
+    '</tr></thead><tbody>'+rows+'</tbody></table></div>' +
+    '<button class="btn ghost small add-row-btn" id="btnAddSetor">+ Adicionar setor</button>' +
+  '</div>';
+}
+function cargosDoSetor(i){ return state.cargos.filter(function(c){ return Number(c.setorIdx)===i && c.cargo && c.cargo.trim(); }); }
+
+/* ---- 03 Cargos ---- */
+function cargoId(c, i){
+  var si = Number(c.setorIdx);
+  if(isNaN(si) || !state.setores[si]) return '—';
+  var seq = 0, n=0;
+  for(var k=0;k<state.cargos.length;k++){
+    if(Number(state.cargos[k].setorIdx)===si){ n++; if(k===i) seq=n; }
+  }
+  return setorId(si)+'-CG'+pad(seq);
+}
+function renderCargos(){
+  var setorOptions = state.setores.map(function(s,i){ return '<option value="'+i+'">'+esc(setorLabel(s,i))+'</option>'; }).join('');
+  var rows = state.cargos.map(function(c,i){
+    var cboInvalid = c.cbo && !/^\d{6}$/.test(c.cbo);
+    var checagem = checagemCargo(c);
+    return '<tr data-idx="'+i+'">' +
+      '<td class="auto">'+cargoId(c,i)+'</td>' +
+      '<td><select data-cargo="setorIdx"><option value="">Selecione…</option>'+setorOptions+'</select></td>' +
+      '<td><input data-cargo="cargo" value="'+esc(c.cargo)+'" placeholder="Ex.: Mecânico de manutenção"></td>' +
+      '<td><input data-cargo="cbo" value="'+esc(c.cbo)+'" maxlength="6" inputmode="numeric" style="width:70px; '+(cboInvalid?'border-color:var(--red-600);':'')+'" placeholder="000000"></td>' +
+      '<td><input type="number" min="0" data-cargo="nTrab" value="'+esc(c.nTrab)+'" style="width:70px;"></td>' +
+      '<td><input list="turnoOpts2" data-cargo="turno" value="'+esc(c.turno)+'" style="width:120px;"></td>' +
+      '<td><textarea data-cargo="atividades" rows="1" placeholder="Atividades realmente executadas">'+esc(c.atividades)+'</textarea></td>' +
+      '<td><textarea data-cargo="produtos" rows="1" placeholder="Produtos/máquinas que utiliza">'+esc(c.produtos)+'</textarea></td>' +
+      '<td><input data-cargo="observacoes" value="'+esc(c.observacoes)+'"></td>' +
+      '<td>'+ (checagem==='OK'? '<span class="badge ok">OK</span>' : (c.cargo&&c.cargo.trim()? '<span class="badge warn">REVISAR</span>':'<span class="badge muted">—</span>')) +'</td>' +
+      '<td><button class="row-del" data-del-cargo="'+i+'" title="Remover cargo">✕</button></td>' +
+    '</tr>';
+  }).join('');
+  return '<div class="card"><h2>03 · Quadro de cargos × setores</h2>' +
+    '<p class="lede">Um cargo em mais de um setor = uma linha por setor. CBO deve ter 6 dígitos (consulte a Classificação Brasileira de Ocupações).</p>' +
+    '<datalist id="turnoOpts2"><option>Administrativo</option><option>1º Turno</option><option>2º Turno</option><option>3º Turno</option><option>Revezamento 12x36</option><option>Revezamento 6x1</option></datalist>' +
+    '<div class="tbl-wrap"><table class="data"><thead><tr>' +
+      '<th>ID</th><th>Setor *</th><th>Cargo *</th><th>CBO</th><th>Nº trab.</th><th>Turno</th><th>Atividades</th><th>Produtos/máquinas</th><th>Observações</th><th>Checagem</th><th></th>' +
+    '</tr></thead><tbody>'+rows+'</tbody></table></div>' +
+    '<button class="btn ghost small add-row-btn" id="btnAddCargo">+ Adicionar cargo</button>' +
+  '</div>';
+}
+function checagemCargo(c){
+  if(!(c.cargo && c.cargo.trim())) return '';
+  var setorOk = c.setorIdx!=='' && c.setorIdx!=null && state.setores[c.setorIdx];
+  var cboOk = /^\d{6}$/.test(String(c.cbo||''));
+  var nTrabOk = Number(c.nTrab)>0;
+  var atividadesOk = c.atividades && c.atividades.trim();
+  return (setorOk && cboOk && nTrabOk && atividadesOk) ? 'OK' : 'REVISAR';
+}
+
+/* ---- 04 Anexos ---- */
+function renderAnexos(){
+  function row(a, idx, extra){
+    return '<tr data-idx="'+idx+'" data-extra="'+(extra?1:0)+'">' +
+      '<td style="min-width:220px;">'+(extra? '<input data-anexo-doc="1" value="'+esc(a.doc)+'" placeholder="Nome do documento">' : esc(a.doc))+'</td>' +
+      '<td>'+(a.obrigatorio==='Sim'? '<span class="badge warn">Sim</span>':'<span class="badge muted">Não</span>')+'</td>' +
+      '<td style="text-align:center;"><input type="checkbox" data-anexo="enviado" '+(a.enviado?'checked':'')+'></td>' +
+      '<td><input data-anexo="nomeArquivo" value="'+esc(a.nomeArquivo)+'" placeholder="nome-do-arquivo.pdf"></td>' +
+      '<td><input data-anexo="observacoes" value="'+esc(a.observacoes)+'"></td>' +
+      '<td>'+(extra? '<button class="row-del" data-del-anexo-extra="'+idx+'">✕</button>' : '')+'</td>' +
+    '</tr>';
+  }
+  var rowsFixas = state.anexos.map(function(a,i){ return row(a,i,false); }).join('');
+  var rowsExtra = state.anexosExtra.map(function(a,i){ return row(a,i,true); }).join('');
+  return '<div class="card"><h2>04 · Documentos enviados junto com a ficha</h2>' +
+    '<p class="lede">Marque Sim/Não e anote o nome do arquivo enviado pelo portal ou e-mail à E-Soluções.</p>' +
+    '<div class="tbl-wrap"><table class="data"><thead><tr>' +
+      '<th>Documento</th><th>Obrigatório?</th><th>Enviado?</th><th>Nome do arquivo</th><th>Observações</th><th></th>' +
+    '</tr></thead><tbody>'+rowsFixas+rowsExtra+'</tbody></table></div>' +
+    '<button class="btn ghost small add-row-btn" id="btnAddAnexo">+ Adicionar outro documento</button>' +
+  '</div>';
+}
+
+/* ---- 05 Conferência ---- */
+function renderConferencia(){
+  var conf = computeConferencia();
+  var rows = conf.itens.map(function(it){
+    var cls = it.situacao==='OK'?'ok':(it.situacao==='VERIFICAR'?'info':'warn');
+    return '<tr><td>'+esc(it.label)+'<div style="font-size:.74rem;color:var(--ink-faint);margin-top:2px;">'+esc(it.detalhe)+'</div></td>' +
+      '<td class="mono">'+esc(it.valor)+'</td>' +
+      '<td><span class="badge '+cls+'">'+esc(it.situacao)+'</span></td>' +
+      '<td><button class="jump-link" data-jump="'+it.onde+'">corrigir →</button></td></tr>';
+  }).join('');
+  var pronto = conf.status==='PRONTO PARA ENVIO';
+  return '<div class="status-banner '+(pronto?'pronto':'pendente')+'">' +
+      '<div style="font-size:1.8rem;">'+(pronto?'✅':'⏳')+'</div>' +
+      '<div><div class="big">STATUS DA FICHA: '+esc(conf.status)+'</div>' +
+      '<div class="sub">'+(pronto? 'Todas as verificações obrigatórias foram atendidas. Você já pode seguir para a etapa de envio.' : 'Corrija os itens marcados como PENDENTE abaixo antes de enviar a ficha ao setor de Segurança e Medicina do Trabalho.')+'</div></div>' +
+    '</div>' +
+    '<div class="card"><h2>05 · Conferência automática</h2>' +
+      '<p class="lede">Verificação equivalente à aba 05_Conferência da planilha original. Ressalva: diferença de quantitativo pode ocorrer por afastados/terceiros — explique em Observações.</p>' +
+      '<div class="tbl-wrap check-tbl"><table class="data"><thead><tr><th>Verificação</th><th>Valor</th><th>Situação</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>' +
+    '</div>';
+}
+
+/* ---- 06 Envio / Exportação ---- */
+function renderEnvio(){
+  var conf = computeConferencia();
+  var pronto = conf.status==='PRONTO PARA ENVIO';
+  var cnpjDigits = onlyDigits(state.empresa.cnpj) || 'empresa';
+  var dateTag = todayISO();
+  return '' +
+  (pronto? '' : '<div class="callout amber">⚠ A ficha ainda está <strong>PENDENTE</strong> na etapa de Conferência. Você pode gerar os arquivos mesmo assim, mas recomendamos corrigir as pendências antes do envio oficial ao SESMT.</div>') +
+  '<div class="card">' +
+    '<h2>06 · Exportar dados preenchidos</h2>' +
+    '<p class="lede">Gere os arquivos abaixo e anexe-os ao e-mail de envio para o setor de Segurança e Medicina do Trabalho.</p>' +
+    '<div class="export-grid">' +
+      '<div class="export-card">' +
+        '<div class="ic">📊</div><h3>Planilha automatizada (.xlsx)</h3>' +
+        '<p>Reproduz as abas do FOR-LT-001 (Instruções, Empresa, Setores, Cargos, Anexos, Conferência e Exportação SOC) já preenchidas com os dados desta ficha, com colunas "(auto)" calculadas por fórmula.</p>' +
+        '<div class="filehint">FOR-LT-001_'+cnpjDigits+'_'+dateTag+'.xlsx</div>' +
+        '<button class="btn primary" id="btnExportXlsx">⬇ Baixar planilha (.xlsx)</button>' +
+      '</div>' +
+      '<div class="export-card">' +
+        '<div class="ic">🔗</div><h3>Arquivo para o SOC</h3>' +
+        '<p>Layout de importação por CNPJ, setor e cargo (mesmo modelo usado na aba 06_Exportação_SOC), pronto para colar ou importar diretamente no sistema SOC.</p>' +
+        '<div class="filehint">SOC_Importacao_'+cnpjDigits+'_'+dateTag+'.csv</div>' +
+        '<button class="btn primary" id="btnExportSoc">⬇ Baixar arquivo SOC (.csv)</button>' +
+      '</div>' +
+      '<div class="export-card">' +
+        '<div class="ic">🧭</div><h3>Orbit Gestão (E-Soluções)</h3>' +
+        '<p>Exportação estruturada (JSON e CSV) com empresa, setores, cargos e anexos, para importação/integração no Orbit Gestão. Layout sugerido — ajustar campos conforme o template de importação oficial do Orbit, se houver divergência.</p>' +
+        '<div class="filehint">Orbit_'+cnpjDigits+'_'+dateTag+'.json / .csv</div>' +
+        '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
+          '<button class="btn primary small" id="btnExportOrbitJson">⬇ .json</button>' +
+          '<button class="btn ghost small" id="btnExportOrbitCsv">⬇ .csv</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+  '</div>' +
+  '<div class="send-box">' +
+    '<h2>Enviar ao setor de Segurança e Medicina do Trabalho</h2>' +
+    '<p class="lede">Após baixar os arquivos acima, envie-os ao SESMT da sua empresa e à E-Soluções Ocupacionais para darmos início ao PRO-LT-001. Isto mantém o cadastro auditável e dentro dos padrões ISO 45001 (controle de documentos e informação).</p>' +
+    '<div class="field-grid" style="margin-bottom:12px;">' +
+      '<div class="field"><label>E-mail do SESMT / responsável interno</label><input type="email" id="envioDestinatario" value="'+esc(state.envio.destinatario)+'" placeholder="sesmt@suaempresa.com.br"></div>' +
+      '<div class="field"><label>Responsável técnico de SST que irá receber</label><input id="envioResponsavel" value="'+esc(state.envio.responsavelSst)+'" placeholder="Nome do técnico/engenheiro de segurança"></div>' +
+    '</div>' +
+    '<div style="display:flex; gap:10px; flex-wrap:wrap;">' +
+      '<button class="btn primary" id="btnMailto">✉ Abrir e-mail pronto para envio</button>' +
+      '<button class="btn ghost" id="btnCopyResumo">📋 Copiar resumo da ficha</button>' +
+      '<button class="btn ghost" id="btnPrint">🖨 Imprimir / salvar em PDF</button>' +
+    '</div>' +
+    '<p class="lede" style="margin-top:12px; font-size:.78rem;">O e-mail não anexa arquivos automaticamente — lembre-se de anexar manualmente os arquivos baixados (.xlsx / SOC / Orbit) antes de enviar.</p>' +
+  '</div>';
+}
+
+/* ============================================================
+   EXPORTAÇÕES
+   ============================================================ */
+function buildWorkbook(){
+  var wb = XLSX.utils.book_new();
+  var emp = state.empresa;
+  var setoresValidos = state.setores.map(function(s,i){ return {s:s, i:i}; }).filter(function(x){ return x.s.nome && x.s.nome.trim(); });
+  var cargosValidos = state.cargos.map(function(c,i){ return {c:c, i:i}; }).filter(function(x){ return x.c.cargo && x.c.cargo.trim(); });
+
+  // 00_Instruções
+  var ws00 = XLSX.utils.aoa_to_sheet([
+    ['FOR-LT-001 · Ficha de Pré-Cadastro do Cliente · rev.01 (gerado pela versão web)'],
+    ['E-Soluções Ocupacionais · Vinculado ao PRO-LT-001 · Documento controlado'],
+    [''],
+    ['Ficha ID', state.fichaId],
+    ['Gerado em', new Date().toLocaleString('pt-BR')],
+    ['Status na conferência', computeConferencia().status],
+    [''],
+    ['Proteção de dados: as informações são tratadas conforme a LGPD, exclusivamente para a elaboração dos programas e laudos de SST.'],
+    ['Contato: comercial@esolucoesocupacionais.com.br · (21) 98790-2000']
+  ]);
+  ws00['!cols']=[{wch:100}];
+  XLSX.utils.book_append_sheet(wb, ws00, '00_Instruções');
+
+  // 01_Empresa
+  var ws01data = [['Campo','Resposta']].concat(EMPRESA_FIELDS.map(function(f){ return [f[1], emp[f[0]]||'']; }));
+  var ws01 = XLSX.utils.aoa_to_sheet(ws01data);
+  ws01['!cols']=[{wch:38},{wch:44}];
+  XLSX.utils.book_append_sheet(wb, ws01, '01_Empresa');
+
+  // 02_Setores
+  var ws02data = [['ID_Setor','Setor','Sigla','Descrição do ambiente','Nº empregados','Observações','Cargos cadastrados (auto)','Trab. na aba 03 (auto)']];
+  setoresValidos.forEach(function(x){
+    var rowIdx = ws02data.length; // 0-based within data array (header is row0)
+    ws02data.push([setorId(x.i), x.s.nome||'', x.s.sigla||'', x.s.descricao||'', Number(x.s.nEmpregados)||'', x.s.observacoes||'', '', '']);
+  });
+  var ws02 = XLSX.utils.aoa_to_sheet(ws02data);
+  setoresValidos.forEach(function(x, k){
+    var r = k+1; // 0-based row in sheet (0=header)
+    var excelRow = r+1; // 1-based excel row
+    var gCell = XLSX.utils.encode_cell({r:r,c:6});
+    var hCell = XLSX.utils.encode_cell({r:r,c:7});
+    var cargoCount = cargosDoSetor(x.i).length;
+    var trabSum = cargosDoSetor(x.i).reduce(function(a,c){return a+(Number(c.nTrab)||0);},0);
+    ws02[gCell] = {t:'n', v:cargoCount, f:"COUNTIF('03_Cargos'!$B$2:$B$1000,B"+excelRow+")"};
+    ws02[hCell] = {t:'n', v:trabSum, f:"SUMIF('03_Cargos'!$B$2:$B$1000,B"+excelRow+",'03_Cargos'!$E$2:$E$1000)"};
+  });
+  ws02['!cols']=[{wch:9},{wch:22},{wch:8},{wch:40},{wch:12},{wch:24},{wch:12},{wch:12}];
+  XLSX.utils.book_append_sheet(wb, ws02, '02_Setores');
+
+  // 03_Cargos
+  var ws03data = [['ID_Cargo','Setor','Cargo','CBO','Nº trabalhadores','Turno','Atividades realmente executadas','Produtos / máquinas que utiliza','Observações','Checagem (auto)']];
+  cargosValidos.forEach(function(x){
+    var setorNome = state.setores[x.c.setorIdx] ? setorLabel(state.setores[x.c.setorIdx], x.c.setorIdx) : '';
+    ws03data.push([cargoId(x.c,x.i), setorNome, x.c.cargo||'', x.c.cbo||'', Number(x.c.nTrab)||'', x.c.turno||'', x.c.atividades||'', x.c.produtos||'', x.c.observacoes||'', '']);
+  });
+  var ws03 = XLSX.utils.aoa_to_sheet(ws03data);
+  cargosValidos.forEach(function(x,k){
+    var r = k+1, excelRow = r+1;
+    var jCell = XLSX.utils.encode_cell({r:r,c:9});
+    ws03[jCell] = {t:'s', v: checagemCargo(x.c)||'REVISAR', f:'IF(AND(B'+excelRow+'<>"",LEN(D'+excelRow+')=6,E'+excelRow+'>0,G'+excelRow+'<>""),"OK","REVISAR")'};
+  });
+  ws03['!cols']=[{wch:14},{wch:20},{wch:26},{wch:9},{wch:10},{wch:14},{wch:44},{wch:34},{wch:24},{wch:11}];
+  XLSX.utils.book_append_sheet(wb, ws03, '03_Cargos');
+
+  // 04_Anexos
+  var todosAnexos = state.anexos.concat(state.anexosExtra);
+  var ws04data = [['Documento','Obrigatório?','Enviado?','Nome do arquivo','Observações']].concat(
+    todosAnexos.map(function(a){ return [a.doc, a.obrigatorio, a.enviado?'Sim':'Não', a.nomeArquivo||'', a.observacoes||'']; })
+  );
+  var ws04 = XLSX.utils.aoa_to_sheet(ws04data);
+  ws04['!cols']=[{wch:56},{wch:12},{wch:10},{wch:26},{wch:30}];
+  XLSX.utils.book_append_sheet(wb, ws04, '04_Anexos');
+
+  // 05_Conferência
+  var conf = computeConferencia();
+  var ws05data = [['Verificação','Valor','Situação','Detalhe']].concat(
+    conf.itens.map(function(it){ return [it.label, it.valor, it.situacao, it.detalhe]; })
+  );
+  ws05data.push(['','','','']);
+  ws05data.push(['STATUS DA FICHA', conf.status, '', '']);
+  var ws05 = XLSX.utils.aoa_to_sheet(ws05data);
+  ws05['!cols']=[{wch:56},{wch:10},{wch:16},{wch:50}];
+  XLSX.utils.book_append_sheet(wb, ws05, '05_Conferência');
+
+  // 06_Exportação_SOC
+  var ws06data = [['CNPJ','ID_Setor','Setor','Sigla setor','ID_Cargo','Cargo','CBO','Nº trab.','Turno','Descrição de atividades']];
+  cargosValidos.forEach(function(x){
+    var si = Number(x.c.setorIdx);
+    var setor = state.setores[si] || {};
+    ws06data.push([onlyDigits(emp.cnpj), setorId(si), setor.nome||'', (setor.sigla||'').toUpperCase(), cargoId(x.c,x.i), x.c.cargo||'', x.c.cbo||'', Number(x.c.nTrab)||'', x.c.turno||'', x.c.atividades||'']);
+  });
+  var ws06 = XLSX.utils.aoa_to_sheet(ws06data);
+  ws06['!cols']=[{wch:16},{wch:9},{wch:20},{wch:11},{wch:14},{wch:26},{wch:9},{wch:9},{wch:14},{wch:44}];
+  XLSX.utils.book_append_sheet(wb, ws06, '06_Exportação_SOC');
+
+  return wb;
+}
+
+function exportXlsx(){
+  var wb = buildWorkbook();
+  var cnpjDigits = onlyDigits(state.empresa.cnpj) || 'empresa';
+  XLSX.writeFile(wb, 'FOR-LT-001_'+cnpjDigits+'_'+todayISO()+'.xlsx');
+  toast('Planilha automatizada gerada.');
+}
+
+function socRows(){
+  var emp = state.empresa;
+  var cargosValidos = state.cargos.map(function(c,i){ return {c:c,i:i}; }).filter(function(x){ return x.c.cargo && x.c.cargo.trim(); });
+  var rows = [['CNPJ','ID_Setor','Setor','Sigla setor','ID_Cargo','Cargo','CBO','Nº trab.','Turno','Descrição de atividades']];
+  cargosValidos.forEach(function(x){
+    var si = Number(x.c.setorIdx);
+    var setor = state.setores[si] || {};
+    rows.push([onlyDigits(emp.cnpj), setorId(si), setor.nome||'', (setor.sigla||'').toUpperCase(), cargoId(x.c,x.i), x.c.cargo||'', x.c.cbo||'', Number(x.c.nTrab)||'', x.c.turno||'', x.c.atividades||'']);
+  });
+  return rows;
+}
+function exportSoc(){
+  var cnpjDigits = onlyDigits(state.empresa.cnpj) || 'empresa';
+  download('SOC_Importacao_'+cnpjDigits+'_'+todayISO()+'.csv', toCSV(socRows()), 'text/csv;charset=utf-8');
+  toast('Arquivo para o SOC gerado.');
+}
+
+function orbitPayload(){
+  var emp = state.empresa;
+  var setoresValidos = state.setores.map(function(s,i){ return {s:s,i:i}; }).filter(function(x){ return x.s.nome && x.s.nome.trim(); });
+  var cargosValidos = state.cargos.map(function(c,i){ return {c:c,i:i}; }).filter(function(x){ return x.c.cargo && x.c.cargo.trim(); });
+  return {
+    _readme: 'Layout sugerido de integração com o Orbit Gestão (E-Soluções). Ajustar nomes de campos conforme o template de importação oficial do Orbit, caso divergente.',
+    fichaId: state.fichaId,
+    documentoOrigem: 'FOR-LT-001',
+    geradoEm: new Date().toISOString(),
+    empresa: {
+      razaoSocial: emp.razaoSocial, cnpj: onlyDigits(emp.cnpj), cnae: emp.cnae, grauRiscoNr04: emp.grauRisco,
+      endereco: emp.endereco, nEmpregadosProprios: Number(emp.nEmpregados)||0, nTerceiros: Number(emp.nTerceiros)||0,
+      turnos: emp.turnos, contato: {nome: emp.contatoNome, cargo: emp.contatoCargo, telefone: emp.telefone, email: emp.email},
+      responsavelRH: emp.respRH, preenchidoPor: emp.preenchidoPor, dataPreenchimento: emp.dataPreenchimento
+    },
+    setores: setoresValidos.map(function(x){
+      return {id: setorId(x.i), nome:x.s.nome, sigla:x.s.sigla, descricao:x.s.descricao, nEmpregados:Number(x.s.nEmpregados)||0, observacoes:x.s.observacoes};
+    }),
+    cargos: cargosValidos.map(function(x){
+      var si = Number(x.c.setorIdx);
+      return {id: cargoId(x.c,x.i), setorId: state.setores[si]? setorId(si):null, cargo:x.c.cargo, cbo:x.c.cbo, nTrabalhadores:Number(x.c.nTrab)||0, turno:x.c.turno, atividades:x.c.atividades, produtosMaquinas:x.c.produtos, observacoes:x.c.observacoes};
+    }),
+    anexos: state.anexos.concat(state.anexosExtra).map(function(a){
+      return {documento:a.doc, obrigatorio: a.obrigatorio==='Sim', enviado: !!a.enviado, nomeArquivo:a.nomeArquivo, observacoes:a.observacoes};
+    }),
+    conferencia: computeConferencia().status
+  };
+}
+function exportOrbitJson(){
+  var cnpjDigits = onlyDigits(state.empresa.cnpj) || 'empresa';
+  download('Orbit_'+cnpjDigits+'_'+todayISO()+'.json', JSON.stringify(orbitPayload(), null, 2), 'application/json;charset=utf-8');
+  toast('Arquivo Orbit Gestão (.json) gerado.');
+}
+function exportOrbitCsv(){
+  var p = orbitPayload();
+  var rows = [['razaoSocial','cnpj','setor','sigla','cargo','cbo','nTrabalhadores','turno','atividades','produtosMaquinas','observacoes']];
+  p.cargos.forEach(function(c){
+    var setor = p.setores.filter(function(s){ return s.id===c.setorId; })[0] || {};
+    rows.push([p.empresa.razaoSocial, p.empresa.cnpj, setor.nome||'', setor.sigla||'', c.cargo, c.cbo, c.nTrabalhadores, c.turno, c.atividades, c.produtosMaquinas, c.observacoes]);
+  });
+  var cnpjDigits = onlyDigits(state.empresa.cnpj) || 'empresa';
+  download('Orbit_'+cnpjDigits+'_'+todayISO()+'.csv', toCSV(rows), 'text/csv;charset=utf-8');
+  toast('Arquivo Orbit Gestão (.csv) gerado.');
+}
+
+function resumoTexto(){
+  var conf = computeConferencia();
+  var emp = state.empresa;
+  var linhas = [
+    'FOR-LT-001 · Ficha de Pré-Cadastro do Cliente',
+    'Ficha ID: '+state.fichaId,
+    'Status: '+conf.status,
+    '',
+    'Empresa: '+(emp.razaoSocial||'—'),
+    'CNPJ: '+(emp.cnpj||'—'),
+    'Endereço: '+(emp.endereco||'—'),
+    'Nº empregados próprios: '+(emp.nEmpregados||'—')+' · Terceiros: '+(emp.nTerceiros||'0'),
+    'Contato: '+(emp.contatoNome||'—')+' ('+(emp.contatoCargo||'—')+') · '+(emp.telefone||'—')+' · '+(emp.email||'—'),
+    '',
+    'Setores cadastrados: '+state.setores.filter(function(s){return s.nome&&s.nome.trim();}).length,
+    'Cargos cadastrados: '+state.cargos.filter(function(c){return c.cargo&&c.cargo.trim();}).length,
+    'Anexos enviados: '+state.anexos.concat(state.anexosExtra).filter(function(a){return a.enviado;}).length+' / '+(state.anexos.length+state.anexosExtra.length),
+    '',
+    'Preenchido por: '+(emp.preenchidoPor||'—')+' em '+(emp.dataPreenchimento||'—')
+  ];
+  return linhas.join('\n');
+}
+
+function mailtoLink(){
+  var to = encodeURIComponent(state.envio.destinatario||'');
+  var cc = encodeURIComponent('comercial@esolucoesocupacionais.com.br');
+  var subject = encodeURIComponent('FOR-LT-001 · Pré-Cadastro do Cliente · '+(state.empresa.razaoSocial||state.fichaId));
+  var body = encodeURIComponent(
+    'Prezado(a) '+(state.envio.responsavelSst||'responsável de SST')+',\n\n'+
+    'Segue a Ficha de Pré-Cadastro do Cliente (FOR-LT-001) preenchida, referente ao PRO-LT-001.\n\n'+
+    resumoTexto()+'\n\n'+
+    'Anexos: lembre-se de anexar a planilha automatizada (.xlsx), o arquivo do SOC (.csv) e/ou do Orbit Gestão (.json/.csv) baixados na ferramenta antes de enviar este e-mail.\n\n'+
+    'Atenciosamente.'
+  );
+  return 'mailto:'+to+'?cc='+cc+'&subject='+subject+'&body='+body;
+}
+
+/* ============================================================
+   EVENTOS
+   ============================================================ */
+function wireStepEvents(){
+  var el = document.getElementById('content');
+
+  // Instruções
+  var btnReset = document.getElementById('btnResetAll');
+  if(btnReset) btnReset.addEventListener('click', function(){
+    if(confirm('Isso apaga todos os dados preenchidos nesta ficha (neste navegador). Deseja continuar?')){
+      state = defaultState(); persist(); goStep(0); toast('Novo cadastro iniciado.');
+    }
+  });
+  var btnExpJson = document.getElementById('btnExportJson');
+  if(btnExpJson) btnExpJson.addEventListener('click', function(){
+    download('rascunho_'+state.fichaId+'.json', JSON.stringify(state,null,2), 'application/json;charset=utf-8');
+    toast('Rascunho exportado.');
+  });
+  var fileImp = document.getElementById('fileImportJson');
+  if(fileImp) fileImp.addEventListener('change', function(e){
+    var f = e.target.files[0]; if(!f) return;
+    var reader = new FileReader();
+    reader.onload = function(){
+      try{
+        var parsed = JSON.parse(reader.result);
+        var base = defaultState();
+        state = Object.assign(base, parsed, {
+          empresa: Object.assign(blankEmpresa(), parsed.empresa||{}),
+          setores: (parsed.setores&&parsed.setores.length)? parsed.setores: base.setores,
+          cargos: (parsed.cargos&&parsed.cargos.length)? parsed.cargos: base.cargos,
+          anexos: (parsed.anexos&&parsed.anexos.length===ANEXOS_FIXOS.length)? parsed.anexos: base.anexos,
+          anexosExtra: parsed.anexosExtra||[],
+          envio: Object.assign({destinatario:'',responsavelSst:''}, parsed.envio||{})
+        });
+        persist(); renderStepper(); renderContent(); toast('Rascunho importado com sucesso.');
+      }catch(err){ alert('Arquivo inválido. Selecione um .json exportado por esta ferramenta.'); }
+    };
+    reader.readAsText(f);
+  });
+
+  // Empresa
+  el.querySelectorAll('[data-emp]').forEach(function(inp){
+    inp.addEventListener('input', function(){
+      var key = inp.dataset.emp;
+      var val = inp.value;
+      if(key==='cnpj'){ val = maskCNPJ(val); inp.value = val; }
+      state.empresa[key] = val;
+      persist(); renderStepper();
+      var field = inp.closest('.field');
+      if(field) field.classList.toggle('invalid', field.querySelector('label .req') && !val.trim());
+    });
+  });
+
+  // Setores
+  el.querySelectorAll('[data-setor]').forEach(function(inp){
+    inp.addEventListener('input', function(){
+      var tr = inp.closest('tr'); var idx = Number(tr.dataset.idx);
+      var key = inp.dataset.setor;
+      var val = inp.value;
+      if(key==='sigla') val = val.toUpperCase().slice(0,3);
+      state.setores[idx][key] = val;
+      persist(); renderStepper();
+    });
+  });
+  var btnAddSetor = document.getElementById('btnAddSetor');
+  if(btnAddSetor) btnAddSetor.addEventListener('click', function(){ state.setores.push(blankSetor()); persist(); renderContent(); });
+  el.querySelectorAll('[data-del-setor]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var idx = Number(b.dataset.delSetor);
+      if(state.setores.length<=1){ state.setores[idx]=blankSetor(); }
+      else state.setores.splice(idx,1);
+      state.cargos.forEach(function(c){ if(Number(c.setorIdx)===idx) c.setorIdx=''; else if(Number(c.setorIdx)>idx) c.setorIdx = Number(c.setorIdx)-1; });
+      persist(); renderContent(); renderStepper();
+    });
+  });
+
+  // Cargos
+  el.querySelectorAll('[data-cargo]').forEach(function(inp){
+    inp.addEventListener('input', function(){
+      var tr = inp.closest('tr'); var idx = Number(tr.dataset.idx);
+      var key = inp.dataset.cargo;
+      var val = inp.value;
+      if(key==='cbo') val = onlyDigits(val).slice(0,6);
+      state.cargos[idx][key] = val;
+      persist(); renderContent(); renderStepper();
+    });
+  });
+  var btnAddCargo = document.getElementById('btnAddCargo');
+  if(btnAddCargo) btnAddCargo.addEventListener('click', function(){ state.cargos.push(blankCargo()); persist(); renderContent(); });
+  el.querySelectorAll('[data-del-cargo]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var idx = Number(b.dataset.delCargo);
+      if(state.cargos.length<=1){ state.cargos[idx]=blankCargo(); }
+      else state.cargos.splice(idx,1);
+      persist(); renderContent(); renderStepper();
+    });
+  });
+
+  // Anexos
+  el.querySelectorAll('[data-anexo]').forEach(function(inp){
+    inp.addEventListener('input', function(){ updAnexo(inp); });
+    inp.addEventListener('change', function(){ updAnexo(inp); });
+  });
+  function updAnexo(inp){
+    var tr = inp.closest('tr'); var idx = Number(tr.dataset.idx); var extra = tr.dataset.extra==='1';
+    var target = extra? state.anexosExtra : state.anexos;
+    var key = inp.dataset.anexo;
+    target[idx][key] = (inp.type==='checkbox') ? inp.checked : inp.value;
+    persist(); renderStepper();
+    var pill = document.getElementById('topStatus'); // keep banner state fresh without full rerender
+  }
+  el.querySelectorAll('[data-anexo-doc]').forEach(function(inp){
+    inp.addEventListener('input', function(){
+      var tr = inp.closest('tr'); var idx = Number(tr.dataset.idx);
+      state.anexosExtra[idx].doc = inp.value; persist();
+    });
+  });
+  var btnAddAnexo = document.getElementById('btnAddAnexo');
+  if(btnAddAnexo) btnAddAnexo.addEventListener('click', function(){
+    state.anexosExtra.push({doc:'', obrigatorio:'Não', enviado:false, nomeArquivo:'', observacoes:''});
+    persist(); renderContent();
+  });
+  el.querySelectorAll('[data-del-anexo-extra]').forEach(function(b){
+    b.addEventListener('click', function(){ state.anexosExtra.splice(Number(b.dataset.delAnexoExtra),1); persist(); renderContent(); });
+  });
+
+  // Conferência jump links
+  el.querySelectorAll('[data-jump]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var map = {empresa:1, setores:2, cargos:3, anexos:4};
+      goStep(map[b.dataset.jump]||0);
+    });
+  });
+
+  // Envio / exportação
+  var bx = document.getElementById('btnExportXlsx'); if(bx) bx.addEventListener('click', exportXlsx);
+  var bs = document.getElementById('btnExportSoc'); if(bs) bs.addEventListener('click', exportSoc);
+  var boj = document.getElementById('btnExportOrbitJson'); if(boj) boj.addEventListener('click', exportOrbitJson);
+  var boc = document.getElementById('btnExportOrbitCsv'); if(boc) boc.addEventListener('click', exportOrbitCsv);
+  var destInp = document.getElementById('envioDestinatario');
+  if(destInp) destInp.addEventListener('input', function(){ state.envio.destinatario = destInp.value; persist(); });
+  var respInp = document.getElementById('envioResponsavel');
+  if(respInp) respInp.addEventListener('input', function(){ state.envio.responsavelSst = respInp.value; persist(); });
+  var btnMail = document.getElementById('btnMailto');
+  if(btnMail) btnMail.addEventListener('click', function(){ window.location.href = mailtoLink(); });
+  var btnCopy = document.getElementById('btnCopyResumo');
+  if(btnCopy) btnCopy.addEventListener('click', function(){
+    var text = resumoTexto();
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ toast('Resumo copiado.'); }).catch(function(){ fallbackCopy(text); });
+    } else fallbackCopy(text);
+  });
+  function fallbackCopy(text){
+    var ta = document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); toast('Resumo copiado.'); }catch(e){ alert(text); }
+    document.body.removeChild(ta);
+  }
+  var btnPrint = document.getElementById('btnPrint');
+  if(btnPrint) btnPrint.addEventListener('click', function(){ window.print(); });
+}
+
+/* ============================================================
+   NAV GLOBAL
+   ============================================================ */
+document.getElementById('stepper').addEventListener('click', function(e){
+  var b = e.target.closest('.step-btn'); if(!b) return;
+  goStep(Number(b.dataset.step));
+});
+document.getElementById('themeBtn').addEventListener('click', function(){
+  var root = document.documentElement;
+  var cur = root.getAttribute('data-theme');
+  var next = cur==='dark' ? 'light' : cur==='light' ? null : 'dark';
+  if(next) root.setAttribute('data-theme', next); else root.removeAttribute('data-theme');
+});
+
+/* ============================================================
+   INIT
+   ============================================================ */
+renderStepper();
+renderContent();
+
+})();
+</script>
+</body>
+</html>
