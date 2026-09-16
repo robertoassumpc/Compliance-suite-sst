@@ -594,6 +594,12 @@ function checagemCargo(c){
   var atividadesOk = c.atividades && c.atividades.trim();
   return (setorOk && cboOk && nTrabOk && atividadesOk) ? 'OK' : 'REVISAR';
 }
+function updateCargoRowBadge(tr, c){
+  var cell = tr.children[9]; if(!cell) return;
+  var checagem = checagemCargo(c);
+  cell.innerHTML = checagem==='OK' ? '<span class="badge ok">OK</span>' :
+    (c.cargo && c.cargo.trim() ? '<span class="badge warn">REVISAR</span>' : '<span class="badge muted">—</span>');
+}
 
 /* ---- 04 Anexos ---- */
 function renderAnexos(){
@@ -955,7 +961,7 @@ function wireStepEvents(){
       var tr = inp.closest('tr'); var idx = Number(tr.dataset.idx);
       var key = inp.dataset.setor;
       var val = inp.value;
-      if(key==='sigla') val = val.toUpperCase().slice(0,3);
+      if(key==='sigla'){ val = val.toUpperCase().slice(0,3); inp.value = val; }
       state.setores[idx][key] = val;
       persist(); renderStepper();
     });
@@ -974,13 +980,21 @@ function wireStepEvents(){
 
   // Cargos
   el.querySelectorAll('[data-cargo]').forEach(function(inp){
-    inp.addEventListener('input', function(){
+    var eventName = inp.tagName==='SELECT' ? 'change' : 'input';
+    inp.addEventListener(eventName, function(){
       var tr = inp.closest('tr'); var idx = Number(tr.dataset.idx);
       var key = inp.dataset.cargo;
       var val = inp.value;
-      if(key==='cbo') val = onlyDigits(val).slice(0,6);
+      if(key==='cbo'){ val = onlyDigits(val).slice(0,6); inp.value = val; }
       state.cargos[idx][key] = val;
-      persist(); renderContent(); renderStepper();
+      persist();
+      if(key==='setorIdx'){
+        // Afeta IDs, contagens do setor e opções entre linhas: precisa recompor a tabela toda.
+        renderContent();
+      } else {
+        updateCargoRowBadge(tr, state.cargos[idx]);
+      }
+      renderStepper();
     });
   });
   var btnAddCargo = document.getElementById('btnAddCargo');
