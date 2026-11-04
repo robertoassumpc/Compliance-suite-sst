@@ -100,9 +100,9 @@
     font-family:"Source Serif 4",Georgia,serif; font-weight:700; font-size:1.05rem;
     color:var(--gold-500); letter-spacing:.02em;
   }
-  .logo .name-block{display:flex; flex-direction:column; line-height:1.1; min-width:0;}
-  .logo .full-name{font-weight:700; font-size:.98rem; color:var(--moss-800); white-space:nowrap;}
-  .logo .role{font-size:.62rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--gold-700); white-space:nowrap;}
+  .logo .name-block{display:flex; flex-direction:column; line-height:1.1; min-width:0; overflow:hidden;}
+  .logo .full-name{font-weight:700; font-size:.98rem; color:var(--moss-800); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .logo .role{font-size:.62rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--gold-700); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 
   /* ============ HEADER / NAV ============ */
   header.site{
