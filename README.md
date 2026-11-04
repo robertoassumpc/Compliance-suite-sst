@@ -1,12 +1,24 @@
 # Compliance Suite SST
 
+Este repositório publica dois sites estáticos (HTML/CSS/JS, sem backend) via
+GitHub Pages, no domínio próprio **b4ocupacional.com.br**:
+
+- **`index.html`** (raiz) — landing page pessoal de Roberto Assumpção /
+  B4 Ocupacional: `https://b4ocupacional.com.br/`
+- **`sistema/index.html`** — Compliance Suite SST, o sistema de gestão
+  descrito abaixo: `https://b4ocupacional.com.br/sistema/`
+
+O arquivo `CNAME` na raiz configura o domínio customizado no GitHub Pages.
+
+## Compliance Suite SST
+
 Sistema de gestão de SST multiempresa para consultoria: **GRO/PGR (NR‑01)**,
 **ISO 45001** (cláusulas 4 a 10), documentos obrigatórios, não conformidades,
 auditorias, treinamentos e indicadores (KPIs), com visão consolidada de
 carteira para consultorias que atendem múltiplas empresas-clientes.
 
-Front-end autocontido (HTML/CSS/JS, sem backend), publicado via GitHub Pages
-a partir de `index.html`. Dados de demonstração com 5 empresas fictícias de
+Front-end autocontido (HTML/CSS/JS, sem backend), publicado a partir de
+`sistema/index.html`. Dados de demonstração com 5 empresas fictícias de
 setores distintos; persistência local (localStorage) das edições feitas na
 sessão do navegador.
 
@@ -24,7 +36,7 @@ sessão do navegador.
 
 ## Pré-Cadastro do Cliente (FOR-LT-001)
 
-`pre-cadastro-cliente.html` é a versão web da ficha FOR-LT-001, para o
+`sistema/pre-cadastro-cliente.html` é a versão web da ficha FOR-LT-001, para o
 cliente preencher diretamente no navegador (com ou sem internet, uma vez
 carregada a página):
 
