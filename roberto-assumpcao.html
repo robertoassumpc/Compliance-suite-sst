@@ -259,6 +259,35 @@
     padding:4px 9px; border-radius:99px;
   }
 
+  /* ============ LOCAÇÃO DE EQUIPAMENTOS ============ */
+  .rental{background:var(--white);}
+  .rental-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:18px;}
+  @media (max-width:900px){ .rental-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:520px){ .rental-grid{grid-template-columns:1fr;} }
+  .rental-item{
+    text-align:center; padding:24px 16px; border:1px solid var(--line); border-radius:16px;
+    background:var(--cream); transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .rental-item:hover{transform:translateY(-4px); box-shadow:var(--shadow-sm);}
+  .rental-item .ic{
+    width:44px; height:44px; border-radius:50%; margin:0 auto 14px; display:grid; place-items:center;
+    background:var(--moss-700);
+  }
+  .rental-item .ic svg{width:22px; height:22px; color:var(--gold-500);}
+  .rental-item h4{font-size:.9rem; margin:0 0 6px; color:var(--moss-800); font-family:"Montserrat"; font-weight:700;}
+  .rental-item p{font-size:.78rem; color:var(--ink-soft); margin:0;}
+  .rental-item .norm{
+    display:inline-block; margin-top:9px; font-family:"Montserrat"; font-size:.6rem; font-weight:700;
+    letter-spacing:.04em; text-transform:uppercase; color:var(--gold-700); background:var(--gold-100);
+    padding:3px 9px; border-radius:99px;
+  }
+  .rental-cta{
+    margin-top:36px; text-align:center; background:linear-gradient(160deg, var(--moss-900), var(--moss-700));
+    border-radius:20px; padding:32px 28px; color:var(--white);
+  }
+  .rental-cta p{margin:0 0 18px; color:rgba(255,255,255,.85); font-size:.94rem; max-width:52ch; margin-inline:auto;}
+  .rental-cta .btn{margin-inline:auto;}
+
   /* ============ DIFERENCIAIS ============ */
   .diff{background:var(--white);}
   .diff-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:20px;}
@@ -387,6 +416,7 @@
     <nav class="links" id="navLinks">
       <a href="#sobre">Sobre</a>
       <a href="#servicos">Serviços</a>
+      <a href="#locacao">Locação de Equipamentos</a>
       <a href="#diferenciais">Diferenciais</a>
       <a href="#contato">Contato</a>
     </nav>
@@ -427,7 +457,7 @@
           </a>
         </div>
         <div class="hero-stats">
-          <div class="stat"><b>3</b><span>Frentes de atuação especializadas</span></div>
+          <div class="stat"><b>4</b><span>Frentes de atuação especializadas</span></div>
           <div class="stat"><b>NR-01</b><span>GRO/PGR &amp; conformidade legal</span></div>
           <div class="stat"><b>Ar+Solo</b><span>Inspeções com drone e in loco</span></div>
         </div>
@@ -525,6 +555,76 @@
           </a>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LOCAÇÃO DE EQUIPAMENTOS ============ -->
+  <section class="rental" id="locacao">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-tag">Locação de Equipamentos</span>
+        <h2 class="sec-title">Locação de Equipamentos de Higiene Ocupacional</h2>
+        <p class="sec-desc">Instrumentos calibrados e prontos para uso, para sua empresa ou equipe técnica realizar avaliações de HO com autonomia — com suporte técnico incluso na locação.</p>
+      </div>
+
+      <div class="rental-grid">
+        <div class="rental-item reveal">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9v6h4l5 5V4L8 9H4z"/><path d="M16 8a5 5 0 010 8M19 5a9 9 0 010 14"/></svg></div>
+          <h4>Dosímetro de Ruído</h4>
+          <p>Avaliação da exposição ocupacional ao ruído durante a jornada.</p>
+          <span class="norm">NHO-01 · NR-15</span>
+        </div>
+        <div class="rental-item reveal">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 14.76V3.5a2.5 2.5 0 00-5 0v11.26a4.5 4.5 0 105 0z"/></svg></div>
+          <h4>Medidor de Estresse Térmico</h4>
+          <p>IBUTG para avaliação de exposição ocupacional ao calor.</p>
+          <span class="norm">NHO-06 · NR-15</span>
+        </div>
+        <div class="rental-item reveal">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2v6L4 20a2 2 0 002 2h12a2 2 0 002-2L15 8V2"/><path d="M9 2h6M8 15h8"/></svg></div>
+          <h4>Bomba de Amostragem de Ar</h4>
+          <p>Coleta de agentes químicos, poeiras e material particulado.</p>
+          <span class="norm">NHO-02/03</span>
+        </div>
+        <div class="rental-item reveal">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 13l4-4"/><path d="M8 13h.01"/></svg></div>
+          <h4>Decibelímetro</h4>
+          <p>Medição pontual de pressão sonora em ambientes de trabalho.</p>
+          <span class="norm">NHO-01</span>
+        </div>
+        <div class="rental-item reveal">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></div>
+          <h4>Luxímetro</h4>
+          <p>Avaliação de iluminância em postos e ambientes de trabalho.</p>
+          <span class="norm">NHO-11</span>
+        </div>
+        <div class="rental-item reveal">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h3l2-7 4 14 3-10 2 5h4"/></svg></div>
+          <h4>Medidor de Vibração</h4>
+          <p>Vibração de mãos e braços, e de corpo inteiro.</p>
+          <span class="norm">NHO-09/10</span>
+        </div>
+        <div class="rental-item reveal">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h9a3 3 0 10-3-3"/><path d="M3 16h12a3 3 0 103-3"/></svg></div>
+          <h4>Anemômetro</h4>
+          <p>Velocidade e vazão de ar em sistemas de ventilação/exaustão.</p>
+          <span class="norm">Ventilação</span>
+        </div>
+        <div class="rental-item reveal">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19a4.5 4.5 0 00-1-8.9A6 6 0 006 11.1 4 4 0 007 19h10.5z"/></svg></div>
+          <h4>Monitor de Gases</h4>
+          <p>Detecção de CO, CO₂ e outros gases em espaços confinados.</p>
+          <span class="norm">NR-33</span>
+        </div>
+      </div>
+
+      <div class="rental-cta reveal">
+        <p>Precisa de outro instrumento ou de um pacote de equipamentos para um projeto específico? Consulte disponibilidade, prazo e condições de locação.</p>
+        <a class="btn btn-gold" href="https://wa.me/5521992363425?text=Ol%C3%A1%20Roberto%2C%20gostaria%20de%20consultar%20a%20loca%C3%A7%C3%A3o%20de%20equipamentos%20de%20Higiene%20Ocupacional." target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.52 3.48A11.87 11.87 0 0 0 12.06 0C5.6 0 .36 5.24.36 11.7c0 2.06.54 4.06 1.56 5.83L0 24l6.63-1.87a11.66 11.66 0 0 0 5.42 1.38h.01c6.46 0 11.7-5.24 11.7-11.7 0-3.13-1.22-6.07-3.24-8.33zM12.06 21.3h-.01a9.6 9.6 0 0 1-4.9-1.34l-.35-.21-3.64 1.03.97-3.63-.23-.37a9.55 9.55 0 0 1-1.47-5.08c0-5.3 4.32-9.62 9.63-9.62 2.57 0 4.99 1 6.8 2.82a9.55 9.55 0 0 1 2.82 6.8c0 5.3-4.32 9.6-9.62 9.6zm5.28-7.2c-.29-.14-1.7-.84-1.96-.93-.26-.1-.46-.14-.65.15-.19.28-.75.93-.92 1.12-.17.19-.34.21-.63.07-.29-.14-1.22-.45-2.32-1.43-.86-.76-1.44-1.71-1.61-2-.17-.29-.02-.44.13-.59.13-.13.29-.34.43-.5.14-.17.19-.29.29-.48.1-.19.05-.36-.02-.5-.07-.14-.65-1.57-.89-2.15-.23-.56-.47-.48-.65-.49h-.55c-.19 0-.5.07-.76.36-.26.29-1 1-1 2.43s1.02 2.82 1.16 3.02c.14.19 2 3.06 4.86 4.29.68.29 1.21.47 1.62.6.68.22 1.3.19 1.79.11.55-.08 1.7-.7 1.94-1.36.24-.67.24-1.25.17-1.36-.07-.12-.26-.19-.55-.33z"/></svg>
+          Consultar locação no WhatsApp
+        </a>
       </div>
     </div>
   </section>
